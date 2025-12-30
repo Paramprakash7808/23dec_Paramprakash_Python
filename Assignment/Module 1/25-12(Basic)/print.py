@@ -1,0 +1,13 @@
+print("Hello")
+print("Python")
+print('''This
+      is
+      used
+      When
+      we 
+      want
+      to
+      write
+      in
+      next
+      line''')
