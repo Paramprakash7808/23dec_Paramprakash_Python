@@ -6,3 +6,10 @@ print("Value of A is:",a) # Printing Values
 
 name = "Prakash"
 print("My Name is:",name)
+
+age = int(input("Enter Your Age: "))
+
+if age >= 18:
+    print("Eligible to Vote") #Indentation(Four WhiteSpace)
+else:
+    print("Not Eligible to Vote")
