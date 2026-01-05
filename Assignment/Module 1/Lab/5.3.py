@@ -3,6 +3,6 @@
 
 List1 = ['apple', 'banana', 'mango']
 
-for List1 in List1:
-    if List1 == "banana":
-        print(List1)
+for i in List1:
+    if i == "banana":
+        print(i)

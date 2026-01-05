@@ -2,4 +2,4 @@
 # onwards using slicing.
 
 mystr = "This is Python!"
-print(mystr[1:])
+print(mystr[1::2])

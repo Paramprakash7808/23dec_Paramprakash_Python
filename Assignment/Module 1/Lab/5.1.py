@@ -3,5 +3,5 @@
 
 list1 = ['apple','banana','mango']
 
-for list1 in list1:
-    print(list1)
+for i in list1:
+    print(i)

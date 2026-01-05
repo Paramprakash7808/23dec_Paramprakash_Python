@@ -2,4 +2,6 @@
 # string starting from index 1.
 
 mystr = "This is Python!"
-print(mystr[1:])
+
+for i in range(1, len(mystr), 2):
+    print(mystr[i], end="")
