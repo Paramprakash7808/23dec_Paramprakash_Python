@@ -1,0 +1,8 @@
+Your ID is: 101
+Your Name is: Prakash
+Your City is: Rajkot
+--------------------------
+Your ID is: 102
+Your Name is: Meet
+Your City is: Junagadh
+--------------------------
