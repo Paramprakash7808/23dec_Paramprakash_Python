@@ -38,11 +38,11 @@ class withdraw(deposit):
         amt = int(input("Enter Amount For Withdraw:"))
 
         min_bal = 2000
-        # with_limit = self.acc_bal - min_bal
+        with_limit = self.acc_bal - amt
 
         if amt <= 0:
             print("insufficient Balance")
-        elif self.acc_bal - amt <= min_bal:
+        elif with_limit <= min_bal:
             print("Minimum Balance Must be 2000")
         else:
             self.acc_bal -= amt
