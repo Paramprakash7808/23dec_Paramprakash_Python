@@ -2,7 +2,7 @@
 
 # students = []
 
-# class data():
+# class data:
 #     id : int
 #     name : str
 
@@ -23,7 +23,7 @@
 #      dt.printdata()
 
 
-class data():
+class data:
     id : int
     name : str
     
