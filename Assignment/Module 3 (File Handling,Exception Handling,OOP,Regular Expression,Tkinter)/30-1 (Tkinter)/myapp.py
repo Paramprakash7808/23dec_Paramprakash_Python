@@ -15,7 +15,6 @@ tk.geometry("500x500")
 tkinter.Label(text="FirstName:",bg="lightblue",fg="red",font="italic 15 bold").grid(row=0,column=0,sticky='w') # W means West side
 tkinter.Label(text="LastName:",bg="lightblue",fg="red",font="italic 15 bold").grid(row=1,column=0,sticky='w')
 
-
 tkinter.Entry().grid(row=0,column=1,sticky='w') # Entry Used for Taking User Input
 tkinter.Entry().grid(row=1,column=1,sticky='w')
 
