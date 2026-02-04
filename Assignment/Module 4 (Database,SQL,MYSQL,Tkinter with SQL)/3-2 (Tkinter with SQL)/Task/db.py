@@ -35,7 +35,7 @@ def updatedata():
     name = input("Enter Your Name:")
     sub = input("Enter Your Subject:")
 
-    update_q = f"Update student set name:{name},subject:{sub})"
+    update_q = f"Update student set name:{name},subject:{sub} where id:{n})"
     try:
         db.execute(update_q)
         db.commit()
