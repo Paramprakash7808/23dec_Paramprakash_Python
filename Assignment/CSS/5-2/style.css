@@ -1,0 +1,26 @@
+body
+{
+    background-color: aqua;
+}
+
+h1
+{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: beige;
+    text-align: center;
+}
+
+.box
+{
+    background-color: bisque;
+    color: rgb(223, 22, 42);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: medium;
+}
+
+#mybox
+{
+    height: 500px;
+    width: 500px;
+    background-color: blue;
+}
