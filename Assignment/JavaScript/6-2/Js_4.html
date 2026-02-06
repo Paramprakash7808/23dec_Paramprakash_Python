@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS-4</title>
+    <style>
+         body
+        {
+            background-color: aqua;
+        }
+        h1
+        {
+            color: beige;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            border-style: solid;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>JS-4</h1>
+    <hr>
+
+    <form onsubmit="return frmsubmit()">
+        <input type="text" id="name" placeholder="Enter Your Name"> <br> <br>
+        <input type="text" id="email" placeholder="Enter Your Email"> <br> <br>
+        <input type="text" id="password" placeholder="Enter Your Password"> <br> <br>
+        <input type="text" id="mobile" placeholder="Enter Your Mobile Number"> <br> <br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        function frmsubmit()
+        {
+            let nm = document.getElementById('name').value;
+            let em = document.getElementById('email').value;
+            let ps = document.getElementById('password').value;
+            let mb = document.getElementById('mobile').value;
+
+            if(nm === '')
+            {
+                alert("Enter Name")
+                return false;
+            }
+            if(!em.includes('@'))
+            {
+                alert("Email Must Includes @")
+                return false;
+            }
+            if(ps.length<=6)
+            {
+                alert("Password Length Must be Greater than 6 Characters")
+                return false;
+            }
+            if(mb.length != 10)
+            {
+                alert("Mobile Number Length Must be 10 Digits")
+                return false;
+            }
+            else
+            {
+                alert("Form Submitted Succesfully!")
+            }
+        }
+    </script>
+    
+</body>
+</html>

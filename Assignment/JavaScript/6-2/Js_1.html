@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS-1</title>
+    <style>
+        body
+        {
+            background-color: aqua;
+        }
+        h1
+        {
+            color: beige;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            border-style: solid;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>JS-1</h1>
+    <hr>
+
+    <input type="text" id="name" placeholder="Enter Your Name">
+    <input type="text" id="city" placeholder="Enter Your City">
+    <button onclick="btnclick()">Submit</button>
+
+    <script>
+        function btnclick()
+        {
+            let a = document.getElementById('name').value
+            let b = document.getElementById('city').value
+            console.log("Your Name is:",a)
+            console.log("Your City is:",b)
+        }
+    </script>
+    
+</body>
+</html>
