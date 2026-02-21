@@ -5,6 +5,6 @@ from .models import *
 
 class studata(admin.ModelAdmin):
     ordering = ['id']
-    list_display = ['id','name','email','address']
+    list_display = ['name','email','mobile','dob']
 
 admin.site.register(studinfo,studata)
