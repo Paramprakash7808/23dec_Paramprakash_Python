@@ -4,6 +4,6 @@ from .models import *
 # Register your models here.
 class studData(admin.ModelAdmin):
     ordering = ['id']
-    list_display = ['id','name','email','dob','mobile']
+    list_display = ['id','name','email','dob']
 
 admin.site.register(studinfo,studData)

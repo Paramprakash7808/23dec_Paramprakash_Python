@@ -11,3 +11,7 @@ def index(request):
         else:
             print(form.errors)
     return render(request,'index.html')
+
+def showdata(request):
+    stdata = studinfo.objects.all()
+    return render(request,'showdata.html',{'stdata':stdata})
