@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Update Student{% else %}Add Student{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center animate-fade-in">
+    <div class="col-md-6">
+        <div class="d-flex align-items-center mb-4">
+            <a href="{% url 'student-list' %}" class="btn btn-light rounded-circle p-2 me-3 shadow-sm"
+                style="width: 40px; height: 40px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                    class="bi bi-chevron-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                </svg>
+            </a>
+            <h1 class="h3 mb-0 fw-bold">{% if object %}Edit Student{% else %}Add Student{% endif %}</h1>
+        </div>
+
+        <div class="card border-0 shadow-lg">
+            <div class="p-1" style="background: linear-gradient(90deg, var(--primary), #a855f7);"></div>
+            <div class="card-body p-5">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-4">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        <div class="input-group">
+                            <!-- Custom class 'form-control' is already styled in base.html -->
+                            {{ field }}
+                        </div>
+                        {% if field.help_text %}
+                        <div class="form-text small opacity-75 mt-1">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% if field.errors %}
+                        <div class="text-danger small fw-bold mt-2">
+                            {% for error in field.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <div class="d-grid mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg shadow">
+                            {% if object %}Update Student Profile{% else %}Register New Student{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <p class="text-secondary small">Only you can manage your student entries.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add bootstrap form-control class to django fields dynamically
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+        el.classList.add('form-control');
+    });
+</script>
+{% endblock %}

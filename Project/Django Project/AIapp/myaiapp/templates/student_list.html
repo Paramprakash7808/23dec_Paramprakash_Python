@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Student List{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="h2 fw-bold text-dark mb-1">Student Dashboard</h1>
+            <p class="text-secondary small fw-medium text-uppercase mb-0">Manage and oversee all registered students</p>
+        </div>
+        <a href="{% url 'student-create' %}" class="btn btn-primary d-flex align-items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-lg"
+                viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
+            </svg>
+            <span>Add Student</span>
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-lg">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr style="border-bottom: 2px solid #f1f5f9;">
+                        <th class="ps-4 py-4 text-uppercase small fw-bold text-secondary">Student Name</th>
+                        <th class="py-4 text-uppercase small fw-bold text-secondary">Email Address</th>
+                        <th class="py-4 text-uppercase small fw-bold text-secondary">Course</th>
+                        <th class="py-4 text-uppercase small fw-bold text-secondary text-center">Age</th>
+                        <th class="pe-4 py-4 text-uppercase small fw-bold text-secondary text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td class="ps-4 py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3"
+                                    style="width: 42px; height: 42px; font-weight: 700; font-size: 1.1rem;">
+                                    {{ student.name|first }}
+                                </div>
+                                <span class="fw-bold text-dark">{{ student.name }}</span>
+                            </div>
+                        </td>
+                        <td class="text-secondary fw-medium">{{ student.email }}</td>
+                        <td>
+                            <span class="badge bg-primary bg-opacity-10 text-primary fw-bold px-3 py-2 rounded-pill"
+                                style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                                {{ student.course|upper }}
+                            </span>
+                        </td>
+                        <td class="text-center font-monospace fw-bold text-dark">{{ student.age }}</td>
+                        <td class="pe-4 text-end">
+                            <div class="btn-group">
+                                <a href="{% url 'student-update' student.id %}"
+                                    class="btn btn-sm btn-white border shadow-sm me-2 rounded-3 px-3 fw-bold text-secondary">
+                                    Edit
+                                </a>
+                                <a href="{% url 'student-delete' student.id %}"
+                                    class="btn btn-sm btn-outline-danger rounded-3 px-3 fw-bold">
+                                    Delete
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="mb-3 opacity-25">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor"
+                                    class="bi bi-person-plus" viewBox="0 0 16 16">
+                                    <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                                    <path fill-rule="evenodd"
+                                        d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5" />
+                                </svg>
+                            </div>
+                            <p class="h5 fw-bold text-dark mb-1">No students found</p>
+                            <p class="text-secondary mb-4">Start organizing your roster by adding a student.</p>
+                            <a href="{% url 'student-create' %}" class="btn btn-primary">Add Your First Student</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endblock %}
