@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center min-h-screen">
+
+<div class="bg-white p-8 rounded-2xl shadow-xl w-96">
+
+<h2 class="text-3xl font-bold text-center mb-6 text-gray-700">Login</h2>
+
+<form method="post" class="space-y-5">
+    {% csrf_token %}
+
+<div>
+<label class="text-sm font-medium text-gray-600">Email</label>
+<input type="email" name="email" placeholder="Enter email"
+class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none">
+</div>
+
+<div>
+<label class="text-sm font-medium text-gray-600">Password</label>
+<input type="password" name="password" placeholder="Enter password"
+class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none">
+</div>
+
+<button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
+Login
+</button>
+
+</form>
+
+<p class="text-center text-sm mt-5">
+Don't have an account?
+<a href="/signup" class="text-indigo-600 font-medium hover:underline">Signup</a>
+</p>
+
+</div>
+
+</body>
+</html>
