@@ -1,0 +1,24 @@
+{% extends 'NotesApp/base.html' %}
+
+{% block title %}Dashboard - NotesApp{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-4">Welcome to NotesApp, {{ user.first_name }}!</h1>
+    <p class="text-lg text-gray-600 mb-8">This is your personal dashboard where you can manage your notes securely.</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+        <div class="p-6 bg-blue-50 rounded-xl border border-blue-100">
+            <h3 class="font-bold text-blue-800 text-xl mb-2">Create Note</h3>
+            <p class="text-blue-600">Jot down your thoughts instantly.</p>
+        </div>
+        <div class="p-6 bg-indigo-50 rounded-xl border border-indigo-100">
+            <h3 class="font-bold text-indigo-800 text-xl mb-2">View History</h3>
+            <p class="text-indigo-600">Access all your previous notes.</p>
+        </div>
+        <div class="p-6 bg-purple-50 rounded-xl border border-purple-100">
+            <h3 class="font-bold text-purple-800 text-xl mb-2">Security</h3>
+            <p class="text-purple-600">Your notes are encrypted and safe.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
