@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>WriteSphere</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="bg-gray-900 text-white px-6 py-4 flex justify-between items-center">
+
+        <div class="text-xl font-bold">
+            <a href="/" class="hover:text-gray-300">WriteSphere</a>
+        </div>
+
+        <div class="space-x-4">
+
+            {% if user.is_authenticated %}
+
+            <a href="/profile/" class="bg-purple-500 hover:bg-purple-600 px-4 py-2 rounded">
+                Profile
+            </a>
+
+            <a href="/create/" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">
+                Create Post
+            </a>
+
+            <a href="/logout/" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded">
+                Logout
+            </a>
+
+            {% else %}
+
+            <a href="/login/" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded">
+                Login
+            </a>
+
+            <a href="/register/" class="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded">
+                Register
+            </a>
+
+            {% endif %}
+
+        </div>
+
+    </nav>
+
+    <!-- Django Messages -->
+    {% if messages %}
+    <div class="max-w-4xl mx-auto mt-6">
+        {% for message in messages %}
+        <div class="bg-green-200 text-green-800 p-3 rounded mb-2">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+
+        <div class="max-w-4xl mx-auto mt-8 px-4">
+
+            {% block content %}
+
+            {% endblock %}
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white text-center py-4 mt-10">
+
+        <p>© 2026 WriteSphere Blog Platform</p>
+
+    </footer>
+
+</body>
+
+</html>

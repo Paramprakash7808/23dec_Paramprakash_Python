@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="bg-white p-6 rounded shadow">
+
+    <h2 class="text-2xl font-bold mb-4">User Profile</h2>
+
+    <div class="flex items-center gap-6">
+
+        {% if user.profile_pic %}
+        <img src="{{ user.profile_pic.url }}" class="w-24 h-24 rounded-full border">
+        {% else %}
+        <div class="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center">
+            <span class="text-xl font-bold text-gray-600">
+                {{ user.username|first|upper }}
+            </span>
+        </div>
+        {% endif %}
+
+        <div>
+            <p class="text-lg"><b>Username:</b> {{ user.username }}</p>
+            <p class="text-lg"><b>Email:</b> {{ user.email }}</p>
+
+            {% if user.bio %}
+            <p class="mt-2 text-gray-600">{{ user.bio }}</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

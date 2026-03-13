@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="bg-white p-6 rounded shadow">
+
+    <h2 class="text-2xl font-bold mb-6">Create Post</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <!-- Title -->
+        <label class="block mb-2 font-semibold">Title</label>
+        <input type="text" name="title" class="w-full border rounded p-2 mb-4" placeholder="Enter post title">
+
+
+        <!-- Content -->
+        <label class="block mb-2 font-semibold">Content</label>
+        <textarea name="content" class="w-full border rounded p-2 mb-4" rows="5"
+            placeholder="Write your blog here..."></textarea>
+
+
+        <!-- Image -->
+        <label class="block mb-2 font-semibold">Image</label>
+        <input type="file" name="image" class="w-full border rounded p-2 mb-4">
+
+
+        <!-- Category -->
+        <label class="block mb-2 font-semibold">Category</label>
+        <select name="category" class="w-full border rounded p-2 mb-4">
+
+            <option value="">Select Category</option>
+            <option value="">Technology</option>
+            <option value="">Programming</option>
+            <option value="">AI</option>
+
+            {% for category in form.category.field.queryset %}
+
+            <option value="{{ category.id }}">{{ category.name }}</option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">
+
+            Publish Post
+
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}
