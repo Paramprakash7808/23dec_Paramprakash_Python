@@ -77,12 +77,8 @@ WSGI_APPLICATION = 'FinalProject.wsgi.application'
 
 DATABASES = {
     'default': {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "FinalProject_db",
-        "USER": "root",
-        "PASSWORD": "",
-        "HOST": "127.0.0.1",
-        "PORT": "3306",
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": "mydatabase",
     }
 }
 
@@ -127,3 +123,20 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email Settings
+# For testing:
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# For real email using Gmail:
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+# IMPORTANT: Use your actual Gmail address and an App Password (not your regular password)
+EMAIL_HOST_USER = 'prakashmakwana7808@gmail.com'
+EMAIL_HOST_PASSWORD = 'ripw dpxr zwwx apoj' # 16-character code from Google App Passwords
+
+# Media Settings
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
