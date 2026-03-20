@@ -8,6 +8,7 @@ urlpatterns = [
     path('users/', views.admin_user_list, name='admin_user_list'),
     path('users/block/<int:user_id>/', views.block_user, name='block_user'),
     path('users/unblock/<int:user_id>/', views.unblock_user, name='unblock_user'),
+    path('users/delete/<int:user_id>/', views.delete_user, name='delete_user'),
     path('notes/', views.admin_note_list, name='admin_note_list'),
     path('notes/approve/<int:note_id>/', views.approve_note, name='approve_note'),
     path('notes/reject/<int:note_id>/', views.reject_note, name='reject_note'),

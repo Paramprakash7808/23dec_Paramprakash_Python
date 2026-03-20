@@ -61,9 +61,6 @@ def login_view(request):
             password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                if user.is_superuser:
-                    messages.error(request, "Admins must use the Admin Login page.")
-                    return render(request, 'NotesApp/login.html', {'form': form})
                 login(request, user)
                 next_url = request.GET.get('next')
                 if next_url:

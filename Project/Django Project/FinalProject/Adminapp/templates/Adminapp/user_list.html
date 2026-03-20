@@ -28,10 +28,11 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     {% if u.is_active %}
-                        <a href="{% url 'block_user' u.id %}" class="text-red-600 hover:text-red-900 font-bold" onclick="return confirm('Block this user?')">Block</a>
+                        <a href="{% url 'block_user' u.id %}" class="text-red-600 hover:text-red-900 font-bold mr-3" onclick="return confirm('Block this user?')">Block</a>
                     {% else %}
-                        <a href="{% url 'unblock_user' u.id %}" class="text-green-600 hover:text-green-900 font-bold">Unblock</a>
+                        <a href="{% url 'unblock_user' u.id %}" class="text-green-600 hover:text-green-900 font-bold mr-3">Unblock</a>
                     {% endif %}
+                    <a href="{% url 'delete_user' u.id %}" class="text-gray-400 hover:text-red-600 font-bold" onclick="return confirm('Are you sure you want to PERMANENTLY delete this user?')">Delete</a>
                 </td>
             </tr>
             {% empty %}
