@@ -4,8 +4,12 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login
 from NotesApp.models import Note, Profile
 from django.contrib import messages
+from .models import AuditLog
 from django.core.mail import send_mail
 from django.conf import settings
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.urls import reverse
 
 def is_admin(user):
     return user.is_superuser
@@ -67,12 +71,34 @@ def approve_note(request, note_id):
     note.status = 'Approved'
     note.save()
     
-    # Send email notification
+    # Create Audit Log
+    AuditLog.objects.create(
+        admin=request.user,
+        action="Approved Note",
+        note=note,
+        details=f"Note ID: {note.id}, Title: {note.title}"
+    )
+
+    # Send Notification Email
+    context = {
+        'username': note.user.username,
+        'status': 'Approved',
+        'note_title': note.title,
+        'message': f"Great news! Your note titled '{note.title}' has been approved and is now visible in your dashboard.",
+        'status_color': '#10b981', # Green
+        'status_bg_color': '#ecfdf5',
+        'dashboard_url': request.build_absolute_uri(reverse('home')),
+    }
+    
+    html_message = render_to_string('NotesApp/emails/note_status_email.html', context)
+    plain_message = strip_tags(html_message)
+    
     send_mail(
         subject="Note Approved",
-        message=f"Hello {note.user.username},\n\nYour note titled '{note.title}' has been approved by the admin.",
+        message=plain_message,
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[note.user.email],
+        html_message=html_message,
         fail_silently=True,
     )
     
@@ -85,14 +111,41 @@ def reject_note(request, note_id):
     note.status = 'Rejected'
     note.save()
     
-    # Send email notification
+    # Create Audit Log
+    AuditLog.objects.create(
+        admin=request.user,
+        action="Rejected Note",
+        note=note,
+        details=f"Note ID: {note.id}, Title: {note.title}"
+    )
+
+    # Send Notification Email
+    context = {
+        'username': note.user.username,
+        'status': 'Rejected',
+        'note_title': note.title,
+        'message': f"We regret to inform you that your note titled '{note.title}' has been rejected by the admin. Please review our guidelines and try again.",
+        'status_color': '#ef4444', # Red
+        'status_bg_color': '#fef2f2',
+        'dashboard_url': request.build_absolute_uri(reverse('home')),
+    }
+    
+    html_message = render_to_string('NotesApp/emails/note_status_email.html', context)
+    plain_message = strip_tags(html_message)
+    
     send_mail(
         subject="Note Rejected",
-        message=f"Hello {note.user.username},\n\nYour note titled '{note.title}' has been rejected by the admin.",
+        message=plain_message,
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[note.user.email],
+        html_message=html_message,
         fail_silently=True,
     )
     
     messages.error(request, f"Note '{note.title}' rejected.")
     return redirect('admin_note_list')
+
+@user_passes_test(is_admin, login_url='login')
+def audit_log_view(request):
+    logs = AuditLog.objects.all().order_by('-timestamp')
+    return render(request, 'Adminapp/audit_log.html', {'logs': logs})

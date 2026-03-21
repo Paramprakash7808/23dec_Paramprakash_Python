@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .email-container {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .header {
+            background-color: {{ status_color|default:"#2563eb" }};
+            color: #ffffff;
+            padding: 32px 24px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .content {
+            padding: 40px;
+            background-color: #ffffff;
+            color: #374151;
+            line-height: 1.6;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 9999px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            background-color: {{ status_bg_color|default:"#dbeafe" }};
+            color: {{ status_color|default:"#1e40af" }};
+        }
+        .note-details {
+            background-color: #f9fafb;
+            border: 1px solid #f3f4f6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+        .note-title {
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #2563eb;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 24px;
+        }
+        .footer {
+            background-color: #f9fafb;
+            color: #6b7280;
+            padding: 24px;
+            text-align: center;
+            font-size: 13px;
+            border-top: 1px solid #f3f4f6;
+        }
+        .footer p {
+            margin: 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>Note Status Update</h1>
+        </div>
+        <div class="content">
+            <p>Hello <strong>{{ username }}</strong>,</p>
+            
+            <div class="status-badge">{{ status }}</div>
+            
+            <p>We are writing to inform you about the status of your note submission.</p>
+            
+            <div class="note-details">
+                <div class="note-title">Note Title:</div>
+                <div>{{ note_title }}</div>
+            </div>
+            
+            <p>{{ message }}</p>
+            
+            {% if status == 'Approved' %}
+            <div style="text-align: center;">
+                <a href="{{ dashboard_url }}" class="btn">View My Notes</a>
+            </div>
+            {% endif %}
+            
+            <p>If you have any questions, please feel free to contact our support team.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2026 NotesApp. All rights reserved.</p>
+            <p>Securely manage your personal notes.</p>
+        </div>
+    </div>
+</body>
+</html>

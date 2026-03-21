@@ -1,0 +1,66 @@
+{% extends 'Adminapp/admin_base.html' %}
+
+{% block title %}Audit Logs - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white">System Audit Logs</h1>
+        <a href="{% url 'admin_dashboard' %}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition duration-200">
+            Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Audit Logs Table -->
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-gray-100 dark:border-slate-700 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-gray-50 dark:bg-slate-900 border-b dark:border-slate-700">
+                    <tr>
+                        <th class="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-slate-400">Timestamp</th>
+                        <th class="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-slate-400">Admin</th>
+                        <th class="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-slate-400">Action</th>
+                        <th class="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-slate-400">Target Note</th>
+                        <th class="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-slate-400">Details</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50 dark:divide-slate-700">
+                    {% for log in logs %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition duration-150">
+                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-slate-400 whitespace-nowrap">
+                            {{ log.timestamp|date:"M d, Y H:i:s" }}
+                        </td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-slate-200">
+                            <span class="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium">
+                                {{ log.admin.username }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-sm font-medium {% if 'Approve' in log.action %}text-green-600 dark:text-green-400{% elif 'Reject' in log.action %}text-red-600 dark:text-red-400{% else %}text-gray-700 dark:text-slate-300{% endif %}">
+                                {{ log.action }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 dark:text-slate-300">
+                            {% if log.note %}
+                                {{ log.note.title|truncatechars:30 }}
+                            {% else %}
+                                <span class="italic text-gray-400 dark:text-slate-500">Note Deleted</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-slate-400">
+                            {{ log.details|default:"-" }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-10 text-center text-gray-500 dark:text-slate-400 italic">
+                            No audit logs found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -10,7 +10,22 @@
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-900">
+<body class="bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
+    <!-- Navbar -->
+    <nav class="bg-white dark:bg-slate-800 shadow-md border-b dark:border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{% url 'admin_dashboard' %}" class="text-2xl font-bold text-blue-600 dark:text-blue-400">Admin Dashboard</a>
+                </div>
+                <div class="flex items-center gap-4">
+                    <a href="{% url 'home' %}" class="text-gray-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition">Back to App</a>
+                    <a href="{% url 'logout' %}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition duration-200">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <div class="flex h-screen">
         <!-- Sidebar -->
         <div class="w-64 bg-slate-900 text-white flex flex-col">

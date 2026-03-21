@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .forms import UserRegistrationForm, UserLoginForm, NoteForm
-from .models import Profile, Note
+from .forms import UserRegistrationForm, UserLoginForm, NoteForm, CategoryForm, ProfileForm, UserUpdateForm
+from .models import Profile, Note, Category
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.core.mail import send_mail, EmailMessage
 from django.template.loader import render_to_string
 import random
@@ -109,8 +110,36 @@ def logout_view(request):
 def home_view(request):
     if request.user.is_superuser:
         return redirect('admin_dashboard')
-    notes = Note.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'NotesApp/index.html', {'notes': notes})
+    
+    notes = Note.objects.filter(user=request.user)
+    
+    # Search functionality
+    search_query = request.GET.get('search')
+    if search_query:
+        notes = notes.filter(
+            Q(title__icontains=search_query) | 
+            Q(description__icontains=search_query)
+        )
+    
+    # Filter functionality
+    status_filter = request.GET.get('status')
+    if status_filter:
+        notes = notes.filter(status=status_filter)
+        
+    category_filter = request.GET.get('category')
+    if category_filter:
+        notes = notes.filter(category_id=category_filter)
+    
+    notes = notes.order_by('-is_pinned', '-created_at')
+    categories = Category.objects.filter(Q(user=request.user) | Q(user__isnull=True))
+    
+    return render(request, 'NotesApp/index.html', {
+        'notes': notes,
+        'categories': categories,
+        'search_query': search_query,
+        'status_filter': status_filter,
+        'category_filter': category_filter
+    })
 
 @login_required(login_url='login')
 def create_note_view(request):
@@ -124,4 +153,86 @@ def create_note_view(request):
             return redirect('home')
     else:
         form = NoteForm()
+        # Filter categories for the current user
+        form.fields['category'].queryset = Category.objects.filter(Q(user=request.user) | Q(user__isnull=True))
     return render(request, 'NotesApp/create_note.html', {'form': form})
+
+@login_required(login_url='login')
+def edit_note_view(request, note_id):
+    note = get_object_or_404(Note, id=note_id, user=request.user)
+    if request.method == 'POST':
+        form = NoteForm(request.POST, request.FILES, instance=note)
+        if form.is_valid():
+            note = form.save(commit=False)
+            note.status = 'Pending' # Reset status for re-approval
+            note.save()
+            messages.success(request, "Note updated successfully. It will be re-approved by admin.")
+            return redirect('home')
+    else:
+        form = NoteForm(instance=note)
+        form.fields['category'].queryset = Category.objects.filter(Q(user=request.user) | Q(user__isnull=True))
+    return render(request, 'NotesApp/edit_note.html', {'form': form, 'note': note})
+
+@login_required(login_url='login')
+def delete_note_view(request, note_id):
+    note = get_object_or_404(Note, id=note_id, user=request.user)
+    title = note.title
+    note.delete()
+    messages.error(request, f"Note '{title}' has been deleted.")
+    return redirect('home')
+
+@login_required(login_url='login')
+def toggle_pin_view(request, note_id):
+    note = get_object_or_404(Note, id=note_id, user=request.user)
+    note.is_pinned = not note.is_pinned
+    note.save()
+    status = "pinned" if note.is_pinned else "unpinned"
+    messages.success(request, f"Note '{note.title}' {status}.")
+    return redirect('home')
+
+@login_required(login_url='login')
+def manage_categories_view(request):
+    categories = Category.objects.filter(user=request.user)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save(commit=False)
+            category.user = request.user
+            category.save()
+            messages.success(request, "Category created successfully.")
+            return redirect('manage_categories')
+    else:
+        form = CategoryForm()
+    return render(request, 'NotesApp/manage_categories.html', {'categories': categories, 'form': form})
+
+@login_required(login_url='login')
+def delete_category_view(request, category_id):
+    category = get_object_or_404(Category, id=category_id, user=request.user)
+    name = category.name
+    category.delete()
+    messages.error(request, f"Category '{name}' deleted.")
+    return redirect('manage_categories')
+
+@login_required(login_url='login')
+def profile_view(request):
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        # Get or create profile
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        p_form = ProfileForm(request.POST, request.FILES, instance=profile)
+        
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, "Your profile has been updated!")
+            return redirect('profile')
+    else:
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfileForm(instance=profile)
+
+    return render(request, 'NotesApp/profile.html', {
+        'u_form': u_form,
+        'p_form': p_form,
+        'profile': profile
+    })

@@ -1,29 +1,53 @@
 {% extends 'Adminapp/admin_base.html' %}
 
 {% block title %}Admin Overview - NotesApp{% endblock %}
-{% block header_title %}Dashboard Overview{% endblock %}
+{% block header_title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-        <h3 class="text-gray-500 font-medium mb-2">Total Users</h3>
-        <p class="text-4xl font-bold text-gray-900">{{ user_count }}</p>
-    </div>
-    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-        <h3 class="text-gray-500 font-medium mb-2">Total Notes</h3>
-        <p class="text-4xl font-bold text-gray-900">{{ note_count }}</p>
-    </div>
-    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-        <h3 class="text-gray-500 font-medium mb-2">Pending Approvals</h3>
-        <p class="text-4xl font-bold text-blue-600">{{ pending_notes }}</p>
-    </div>
-</div>
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-8">Admin Dashboard</h1>
 
-<div class="mt-10 bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-    <h3 class="text-xl font-bold mb-6">Quick Actions</h3>
-    <div class="flex gap-4">
-        <a href="{% url 'admin_user_list' %}" class="px-6 py-3 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition">Manage All Users</a>
-        <a href="{% url 'admin_note_list' %}" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Review Submitted Notes</a>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Stats Cards -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-gray-100 dark:border-slate-700 p-6 flex items-center justify-between">
+            <div>
+                <p class="text-sm font-semibold text-gray-400 dark:text-slate-400 uppercase">Total Users</p>
+                <h2 class="text-3xl font-bold text-gray-800 dark:text-white">{{ user_count }}</h2>
+            </div>
+            <span class="text-4xl">👥</span>
+        </div>
+        
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-gray-100 dark:border-slate-700 p-6 flex items-center justify-between">
+            <div>
+                <p class="text-sm font-semibold text-gray-400 dark:text-slate-400 uppercase">Total Notes</p>
+                <h2 class="text-3xl font-bold text-gray-800 dark:text-white">{{ note_count }}</h2>
+            </div>
+            <span class="text-4xl">🗒️</span>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-gray-100 dark:border-slate-700 p-6 flex items-center justify-between">
+            <div>
+                <p class="text-sm font-semibold text-gray-400 dark:text-slate-400 uppercase">Pending Review</p>
+                <h2 class="text-3xl font-bold text-blue-600 dark:text-blue-400">{{ pending_notes }}</h2>
+            </div>
+            <span class="text-4xl">⏳</span>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <a href="{% url 'admin_user_list' %}" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-md transition text-center group">
+            <span class="block text-2xl mb-2">🧑‍💻</span>
+            <span class="font-bold text-gray-700 dark:text-slate-200 group-hover:text-blue-600">Manage Users</span>
+        </a>
+        <a href="{% url 'admin_note_list' %}" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-md transition text-center group">
+            <span class="block text-2xl mb-2">📑</span>
+            <span class="font-bold text-gray-700 dark:text-slate-200 group-hover:text-blue-600">Review Notes</span>
+        </a>
+        <a href="{% url 'audit_log' %}" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-md transition text-center group">
+            <span class="block text-2xl mb-2">📜</span>
+            <span class="font-bold text-gray-700 dark:text-slate-200 group-hover:text-blue-600">Audit Logs</span>
+        </a>
     </div>
 </div>
 {% endblock %}

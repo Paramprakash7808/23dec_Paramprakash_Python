@@ -12,4 +12,5 @@ urlpatterns = [
     path('notes/', views.admin_note_list, name='admin_note_list'),
     path('notes/approve/<int:note_id>/', views.approve_note, name='approve_note'),
     path('notes/reject/<int:note_id>/', views.reject_note, name='reject_note'),
+    path('audit-log/', views.audit_log_view, name='audit_log'),
 ]
