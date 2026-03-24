@@ -1,0 +1,49 @@
+{% extends 'NotesApp/base.html' %}
+{% block title %}Activity Log - NotesApp{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h2 class="text-3xl font-bold text-gray-800 dark:text-white flex items-center gap-3">
+                <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                Activity Log
+            </h2>
+            <p class="text-gray-500 dark:text-slate-400 mt-1">Your recent actions</p>
+        </div>
+        <a href="{% url 'home' %}" class="bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-700 transition font-semibold">Back to Notes</a>
+    </div>
+
+    {% if activities %}
+    <div class="relative">
+        <!-- Vertical timeline line -->
+        <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-slate-700"></div>
+        <ul class="space-y-4 pl-12">
+            {% for activity in activities %}
+            <li class="relative">
+                <!-- Dot -->
+                <span class="absolute -left-8 mt-1.5 w-4 h-4 rounded-full bg-blue-500 border-2 border-white dark:border-slate-900 flex items-center justify-center"></span>
+                <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4">
+                    <div class="flex justify-between items-start">
+                        <p class="text-sm font-semibold text-gray-800 dark:text-white">{{ activity.action }}</p>
+                        <time class="text-xs text-gray-400 dark:text-slate-500 whitespace-nowrap ml-4">{{ activity.timestamp|timesince }} ago</time>
+                    </div>
+                    {% if activity.note %}
+                    <p class="text-xs text-blue-500 mt-1">📝 {{ activity.note.title }}</p>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% else %}
+    <div class="bg-white dark:bg-slate-800 rounded-2xl p-12 text-center shadow-sm border border-dashed border-gray-200 dark:border-slate-700">
+        <div class="w-20 h-20 bg-gray-50 dark:bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-1">No activity yet</h3>
+        <p class="text-gray-500">Start creating notes to see your activity here.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
