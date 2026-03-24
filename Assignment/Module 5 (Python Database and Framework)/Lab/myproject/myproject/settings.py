@@ -122,3 +122,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# For testing password reset locally -> emails will be printed to the console
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
