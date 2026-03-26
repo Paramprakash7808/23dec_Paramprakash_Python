@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}#{{ tag }} – WriteSphere{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="mb-4">
+        <h2 class="fw-bold"><i class="bi bi-hash me-2 text-primary"></i>{{ tag }}</h2>
+        <small class="text-muted">{{ page_obj.paginator.count }} post{{ page_obj.paginator.count|pluralize }} tagged with "{{ tag }}"</small>
+    </div>
+    {% if page_obj %}
+    <div class="row g-4">
+        {% for post in page_obj %}
+        <div class="col-md-6 col-lg-4">
+            <article class="card post-card h-100 border-0 shadow-sm">
+                {% if post.cover_image %}<img src="{{ post.cover_image.url }}" class="card-img-top post-card-img-sm" alt="{{ post.title }}">
+                {% else %}<div class="card-img-top post-card-img-sm-placeholder d-flex align-items-center justify-content-center"><i class="bi bi-image text-muted fs-3"></i></div>{% endif %}
+                <div class="card-body">
+                    {% if post.category %}<a href="{{ post.category.get_absolute_url }}" class="badge bg-primary-soft text-primary mb-2 text-decoration-none">{{ post.category.name }}</a>{% endif %}
+                    <h6 class="fw-bold"><a href="{{ post.get_absolute_url }}" class="text-dark text-decoration-none">{{ post.title|truncatechars:65 }}</a></h6>
+                    <p class="text-muted small">{{ post.content|striptags|truncatewords:15 }}</p>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <small class="text-muted">{{ post.author.username }} &bull; {{ post.created_at|date:"M d, Y" }}</small>
+                        <span class="text-muted small"><i class="bi bi-heart me-1"></i>{{ post.get_like_count }}</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+        {% endfor %}
+    </div>
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-5"><ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>{% endif %}
+        <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+        {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>{% endif %}
+    </ul></nav>
+    {% endif %}
+    {% else %}
+    <div class="text-center py-5"><i class="bi bi-tags fs-1 text-muted"></i><p class="mt-3 text-muted">No posts found with this tag.</p></div>
+    {% endif %}
+</div>
+{% endblock %}
