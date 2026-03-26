@@ -1,0 +1,8 @@
+# Write a Python program to create a list with elements of multiple data types (integers, 
+# strings, floats, etc.). 
+
+data = [101,'Prakash',2.5,78j,True]
+print(data)
+
+for i in data:
+    print(type(i))
