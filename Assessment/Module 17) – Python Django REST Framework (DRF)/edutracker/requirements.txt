@@ -1,0 +1,9 @@
+# EduTracker Solutions – Python Dependencies
+# Install with: pip install -r requirements.txt
+
+Django==4.2.16
+djangorestframework==3.15.2
+python-dotenv==1.0.1
+
+# For PostgreSQL (uncomment if deploying to PythonAnywhere with Postgres)
+# psycopg2-binary==2.9.9

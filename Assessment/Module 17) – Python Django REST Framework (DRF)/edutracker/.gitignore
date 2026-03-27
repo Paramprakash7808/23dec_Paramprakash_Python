@@ -1,0 +1,42 @@
+# ─── Python ─────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+
+# ─── Virtual Environment ─────────────────────────────────────────────────────────
+venv/
+env/
+.venv/
+ENV/
+
+# ─── Django ──────────────────────────────────────────────────────────────────────
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+/staticfiles/
+/media/
+
+# ─── Environment Variables (NEVER commit this) ───────────────────────────────────
+.env
+
+# ─── IDE / OS ────────────────────────────────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+Thumbs.db

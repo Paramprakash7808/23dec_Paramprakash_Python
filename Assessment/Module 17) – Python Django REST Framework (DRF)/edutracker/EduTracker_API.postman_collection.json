@@ -1,0 +1,269 @@
+{
+  "clientName": "Thunder Client",
+  "collectionName": "EduTracker API - Module 17 DRF",
+  "collectionId": "edutracker-col-001",
+  "dateExported": "2026-03-27",
+  "version": "1.1",
+  "folders": [
+    {
+      "id": "folder-auth",
+      "name": "Auth",
+      "containerId": ""
+    },
+    {
+      "id": "folder-students",
+      "name": "Students",
+      "containerId": ""
+    },
+    {
+      "id": "folder-courses",
+      "name": "Courses",
+      "containerId": ""
+    }
+  ],
+  "requests": [
+    {
+      "id": "req-001",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-auth",
+      "name": "1. Get Auth Token",
+      "url": "http://127.0.0.1:8000/api/auth/token/",
+      "method": "POST",
+      "sortNum": 1,
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"yourpassword\"\n}"
+      }
+    },
+    {
+      "id": "req-002",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-students",
+      "name": "2. Get All Students",
+      "url": "http://127.0.0.1:8000/api/students/",
+      "method": "GET",
+      "sortNum": 2,
+      "headers": [
+        { "name": "Authorization", "value": "Token YOUR_TOKEN_HERE" }
+      ],
+      "body": { "type": "none" }
+    },
+    {
+      "id": "req-003",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-students",
+      "name": "3. Add New Student",
+      "url": "http://127.0.0.1:8000/api/students/",
+      "method": "POST",
+      "sortNum": 3,
+      "headers": [
+        { "name": "Authorization", "value": "Token YOUR_TOKEN_HERE" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"first_name\": \"Ravi\",\n  \"last_name\": \"Patel\",\n  \"email\": \"ravi.patel@example.com\",\n  \"phone\": \"9876543210\",\n  \"date_of_birth\": \"2000-05-15\",\n  \"enrolled_courses\": []\n}"
+      }
+    },
+    {
+      "id": "req-004",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-students",
+      "name": "4. Get Single Student",
+      "url": "http://127.0.0.1:8000/api/students/1/",
+      "method": "GET",
+      "sortNum": 4,
+      "headers": [
+        { "name": "Authorization", "value": "Token YOUR_TOKEN_HERE" }
+      ],
+      "body": { "type": "none" }
+    },
+    {
+      "id": "req-005",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-students",
+      "name": "5. Update Student Full (PUT)",
+      "url": "http://127.0.0.1:8000/api/students/1/",
+      "method": "PUT",
+      "sortNum": 5,
+      "headers": [
+        { "name": "Authorization", "value": "Token YOUR_TOKEN_HERE" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"first_name\": \"Ravi\",\n  \"last_name\": \"Patel Updated\",\n  \"email\": \"ravi.patel@example.com\",\n  \"phone\": \"1112223333\",\n  \"enrolled_courses\": []\n}"
+      }
+    },
+    {
+      "id": "req-006",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-students",
+      "name": "6. Update Student Partial (PATCH)",
+      "url": "http://127.0.0.1:8000/api/students/1/",
+      "method": "PATCH",
+      "sortNum": 6,
+      "headers": [
+        { "name": "Authorization", "value": "Token YOUR_TOKEN_HERE" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"phone\": \"9999999999\"\n}"
+      }
+    },
+    {
+      "id": "req-007",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-students",
+      "name": "7. Delete Student",
+      "url": "http://127.0.0.1:8000/api/students/1/",
+      "method": "DELETE",
+      "sortNum": 7,
+      "headers": [
+        { "name": "Authorization", "value": "Token YOUR_TOKEN_HERE" }
+      ],
+      "body": { "type": "none" }
+    },
+    {
+      "id": "req-008",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-students",
+      "name": "8. Enroll Student in Course",
+      "url": "http://127.0.0.1:8000/api/students/1/enroll/",
+      "method": "POST",
+      "sortNum": 8,
+      "headers": [
+        { "name": "Authorization", "value": "Token YOUR_TOKEN_HERE" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"course_id\": 1\n}"
+      }
+    },
+    {
+      "id": "req-009",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-students",
+      "name": "9. Unenroll Student from Course",
+      "url": "http://127.0.0.1:8000/api/students/1/enroll/",
+      "method": "DELETE",
+      "sortNum": 9,
+      "headers": [
+        { "name": "Authorization", "value": "Token YOUR_TOKEN_HERE" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"course_id\": 1\n}"
+      }
+    },
+    {
+      "id": "req-010",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-courses",
+      "name": "10. Get All Courses",
+      "url": "http://127.0.0.1:8000/api/courses/",
+      "method": "GET",
+      "sortNum": 10,
+      "headers": [
+        { "name": "Authorization", "value": "Token YOUR_TOKEN_HERE" }
+      ],
+      "body": { "type": "none" }
+    },
+    {
+      "id": "req-011",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-courses",
+      "name": "11. Add New Course",
+      "url": "http://127.0.0.1:8000/api/courses/",
+      "method": "POST",
+      "sortNum": 11,
+      "headers": [
+        { "name": "Authorization", "value": "Token YOUR_TOKEN_HERE" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"Django REST Framework\",\n  \"description\": \"Build REST APIs with Django and DRF.\",\n  \"instructor\": \"Alice Smith\",\n  \"duration_weeks\": 6,\n  \"is_active\": true\n}"
+      }
+    },
+    {
+      "id": "req-012",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-courses",
+      "name": "12. Get Single Course",
+      "url": "http://127.0.0.1:8000/api/courses/1/",
+      "method": "GET",
+      "sortNum": 12,
+      "headers": [
+        { "name": "Authorization", "value": "Token YOUR_TOKEN_HERE" }
+      ],
+      "body": { "type": "none" }
+    },
+    {
+      "id": "req-013",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-courses",
+      "name": "13. Update Course Full (PUT)",
+      "url": "http://127.0.0.1:8000/api/courses/1/",
+      "method": "PUT",
+      "sortNum": 13,
+      "headers": [
+        { "name": "Authorization", "value": "Token YOUR_TOKEN_HERE" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"Django Advanced\",\n  \"description\": \"Advanced DRF topics.\",\n  \"instructor\": \"Alice Smith\",\n  \"duration_weeks\": 8,\n  \"is_active\": true\n}"
+      }
+    },
+    {
+      "id": "req-014",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-courses",
+      "name": "14. Update Course Partial (PATCH)",
+      "url": "http://127.0.0.1:8000/api/courses/1/",
+      "method": "PATCH",
+      "sortNum": 14,
+      "headers": [
+        { "name": "Authorization", "value": "Token YOUR_TOKEN_HERE" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"is_active\": false\n}"
+      }
+    },
+    {
+      "id": "req-015",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-courses",
+      "name": "15. Delete Course",
+      "url": "http://127.0.0.1:8000/api/courses/1/",
+      "method": "DELETE",
+      "sortNum": 15,
+      "headers": [
+        { "name": "Authorization", "value": "Token YOUR_TOKEN_HERE" }
+      ],
+      "body": { "type": "none" }
+    },
+    {
+      "id": "req-016",
+      "colId": "edutracker-col-001",
+      "containerId": "folder-courses",
+      "name": "16. Get Students in Course",
+      "url": "http://127.0.0.1:8000/api/courses/1/students/",
+      "method": "GET",
+      "sortNum": 16,
+      "headers": [
+        { "name": "Authorization", "value": "Token YOUR_TOKEN_HERE" }
+      ],
+      "body": { "type": "none" }
+    }
+  ]
+}

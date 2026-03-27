@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'myapp',
+    'doctors',
+    'payments',
 ]
 
 MIDDLEWARE = [
@@ -125,3 +127,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # For testing password reset locally -> emails will be printed to the console
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# Paytm Configuration
+PAYTM_MERCHANT_ID = 'YOUR_TEST_MERCHANT_ID'
+PAYTM_SECRET_KEY = 'YOUR_TEST_KEY_1!'
+PAYTM_WEBSITE = 'WEBSTAGING'
+PAYTM_CHANNEL_ID = 'WEB'
+PAYTM_INDUSTRY_TYPE_ID = 'Retail'
+PAYTM_CALLBACK_URL = 'http://127.0.0.1:8000/payments/callback/'
