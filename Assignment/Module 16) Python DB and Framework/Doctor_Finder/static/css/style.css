@@ -1,0 +1,147 @@
+/*
+ * Doctor Finder - Custom CSS Stylesheet
+ * Practical 2: CSS file to style basic HTML template in Django.
+ *              Custom CSS styling for doctor profile page.
+ */
+
+/* ── Global Styles ─────────────────────────────────────────── */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* ── Hero Section (Home Page - Practical 1) ─────────────────── */
+.hero-section {
+    background: linear-gradient(135deg, #e8f4fd 0%, #d1ecf1 100%);
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #bee5eb;
+}
+
+.hero-section h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #0d6efd;
+    text-shadow: 0 2px 4px rgba(13, 110, 253, 0.15);
+}
+
+/* ── Doctor Cards (Practical 2) ──────────────────────────────── */
+.doctor-card {
+    border: none;
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.doctor-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(13, 110, 253, 0.15) !important;
+}
+
+/* ── Navigation Bar ─────────────────────────────────────────── */
+.navbar-brand {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* ── Profile Page (Practical 2: Doctor Profile Page CSS) ──────── */
+.profile-header {
+    background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* ── Form Styles (Practical 3 & 10 & 13) ───────────────────── */
+.form-control:focus,
+.form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+    background-image: none;
+}
+
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+/* ── Cards ───────────────────────────────────────────────────── */
+.card {
+    border-radius: 10px;
+    border: 1px solid #e8ecef;
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+    font-weight: 600;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.45rem 1.1rem;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+/* ── Badges ──────────────────────────────────────────────────── */
+.badge {
+    border-radius: 20px;
+    padding: 0.35em 0.75em;
+    font-weight: 500;
+}
+
+/* ── Admin Panel Customization hint (Practical 8, 15) ─────────── */
+/* These styles are for the public-facing site; admin styles are Django's */
+
+/* ── Table Styles (Practical 12, 14) ─────────────────────────── */
+.table th {
+    font-weight: 600;
+    background-color: #f0f4ff;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f0f8ff;
+}
+
+/* ── Footer ──────────────────────────────────────────────────── */
+footer {
+    background: #1a1a2e !important;
+    padding: 1.5rem 0;
+}
+
+footer p {
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+/* ── Responsive: Mobile view ─────────────────────────────────── */
+@media (max-width: 576px) {
+    .hero-section h1 {
+        font-size: 1.8rem;
+    }
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+}

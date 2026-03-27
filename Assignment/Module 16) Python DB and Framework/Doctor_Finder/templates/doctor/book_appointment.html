@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+<!--
+  Practical 16: Appointment booking before Paytm payment.
+-->
+
+{% block title %}Book Appointment{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7">
+    <h2 class="mb-4"><i class="fas fa-calendar-plus me-2 text-primary"></i>Book Appointment</h2>
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">Select Doctor</label>
+            {{ form.doctor }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Appointment Date</label>
+            {{ form.appointment_date }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Appointment Time</label>
+            {{ form.appointment_time }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Notes (Optional)</label>
+            {{ form.notes }}
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-calendar-check me-2"></i>Book & Pay via Paytm
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

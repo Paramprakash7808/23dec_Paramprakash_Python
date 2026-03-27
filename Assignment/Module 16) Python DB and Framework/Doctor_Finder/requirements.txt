@@ -1,0 +1,26 @@
+# Doctor Finder - Python Dependencies
+# Practical 5: Install these after activating virtual environment
+#              pip install -r requirements.txt
+
+# Core Django framework (Practical 4, 6)
+Django==4.2.7
+
+# MySQL database connector (Practical 11 - MySQL option)
+mysqlclient==2.2.0
+
+# Social Authentication - Google & Facebook (Practical 19)
+social-auth-app-django==5.4.0
+social-auth-core==4.5.0
+
+# Image handling for doctor/patient profile photos
+Pillow==10.1.0
+
+# HTTP requests (used in Paytm integration - Practical 16)
+requests==2.31.0
+
+# Practical 16: Paytm Payment Gateway checksum generation
+# Install: pip install paytmchecksum
+paytmchecksum==1.0.0
+
+# Optional: Gunicorn for production deployment (Practical 18 - PythonAnywhere)
+# gunicorn==21.2.0

@@ -1,0 +1,14 @@
+# Practical 17: .gitignore for GitHub deployment
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+db.sqlite3
+media/
+staticfiles/
+.env
+*.log
+.DS_Store
+*.sqlite3
+node_modules/

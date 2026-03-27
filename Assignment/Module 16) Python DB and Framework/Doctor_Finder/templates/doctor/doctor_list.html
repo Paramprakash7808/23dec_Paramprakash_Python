@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+<!--
+  Practical 12: List all doctor profiles (Read in CRUD using Django ORM).
+  Practical 9: Navigated via URL pattern /doctors/
+-->
+
+{% block title %}Find Doctors{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-user-md me-2 text-primary"></i>Find a Doctor</h2>
+
+<!-- Filter Form -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Specialty</label>
+                <select name="specialty" class="form-select">
+                    <option value="">-- All Specialties --</option>
+                    {% for val, label in specialties %}
+                    <option value="{{ val }}" {% if selected_specialty == val %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">City</label>
+                <input type="text" name="city" class="form-control"
+                       placeholder="Enter city name" value="{{ selected_city }}">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary me-2">
+                    <i class="fas fa-search me-1"></i>Search
+                </button>
+                <a href="{% url 'doctor_list' %}" class="btn btn-outline-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Doctor Cards -->
+{% if doctors %}
+<p class="text-muted mb-3">Found <strong>{{ doctors.count }}</strong> doctor(s).</p>
+<div class="row g-4">
+    {% for doctor in doctors %}
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm doctor-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    {% if doctor.profile_image %}
+                    <img src="{{ doctor.profile_image.url }}" alt="{{ doctor.name }}"
+                         class="rounded-circle me-3" width="60" height="60" style="object-fit:cover;">
+                    {% else %}
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center
+                                justify-content-center me-3" style="width:60px;height:60px;font-size:1.5rem;">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <h6 class="mb-0 fw-bold">Dr. {{ doctor.name }}</h6>
+                        <small class="text-muted">{{ doctor.get_specialty_display }}</small>
+                    </div>
+                </div>
+                <p class="mb-1"><i class="fas fa-graduation-cap me-2 text-primary"></i>{{ doctor.qualification }}</p>
+                <p class="mb-1"><i class="fas fa-briefcase me-2 text-primary"></i>{{ doctor.experience_years }} yrs experience</p>
+                <p class="mb-1"><i class="fas fa-map-marker-alt me-2 text-primary"></i>{{ doctor.city }}</p>
+                <p class="mb-2"><i class="fas fa-rupee-sign me-2 text-primary"></i>{{ doctor.consultation_fee }}</p>
+                {% if doctor.availability == 'available' %}
+                <span class="badge bg-success">Available</span>
+                {% elif doctor.availability == 'busy' %}
+                <span class="badge bg-warning text-dark">Busy</span>
+                {% else %}
+                <span class="badge bg-danger">On Leave</span>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-white border-0">
+                <a href="{% url 'doctor_profile' doctor.pk %}" class="btn btn-outline-primary btn-sm me-2">View Profile</a>
+                {% if doctor.availability == 'available' %}
+                {% if user.is_authenticated %}
+                <a href="{% url 'book_appointment' %}?doctor={{ doctor.id }}" class="btn btn-primary btn-sm">Book</a>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-primary btn-sm">Book</a>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="fas fa-user-md fa-4x text-muted mb-3"></i>
+    <h4 class="text-muted">No doctors found.</h4>
+    <a href="{% url 'doctor_list' %}" class="btn btn-primary mt-3">Show All Doctors</a>
+</div>
+{% endif %}
+{% endblock %}

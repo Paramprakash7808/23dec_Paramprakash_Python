@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+<!--
+  Practical 2: Doctor profile page with custom CSS styling.
+  Practical 7: MVT Template layer for doctor profile view.
+  Practical 9: Navigated via URL pattern /doctor/<pk>/
+-->
+
+{% block title %}Dr. {{ doctor.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Practical 2: Custom CSS styling for doctor profile page */
+    .profile-header {
+        background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+        color: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    .profile-img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border: 5px solid white;
+        border-radius: 50%;
+    }
+    .profile-img-placeholder {
+        width: 150px;
+        height: 150px;
+        background: rgba(255,255,255,0.3);
+        border: 5px solid white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        color: white;
+    }
+    .info-card {
+        border-left: 4px solid #0d6efd;
+        border-radius: 8px;
+    }
+    .availability-badge {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Practical 2: Styled Doctor Profile Page -->
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'doctor_list' %}">Doctors</a></li>
+        <li class="breadcrumb-item active">Dr. {{ doctor.name }}</li>
+    </ol>
+</nav>
+
+<div class="profile-header d-flex align-items-center gap-4 flex-wrap">
+    {% if doctor.profile_image %}
+    <img src="{{ doctor.profile_image.url }}" alt="{{ doctor.name }}" class="profile-img">
+    {% else %}
+    <div class="profile-img-placeholder">
+        <i class="fas fa-user-md"></i>
+    </div>
+    {% endif %}
+    <div>
+        <h1 class="mb-1">Dr. {{ doctor.name }}</h1>
+        <p class="fs-5 mb-1"><i class="fas fa-stethoscope me-2"></i>{{ doctor.get_specialty_display }}</p>
+        <p class="mb-2"><i class="fas fa-graduation-cap me-2"></i>{{ doctor.qualification }}</p>
+        {% if doctor.availability == 'available' %}
+        <span class="badge bg-success availability-badge">
+            <i class="fas fa-check-circle me-1"></i>Available
+        </span>
+        {% elif doctor.availability == 'busy' %}
+        <span class="badge bg-warning text-dark availability-badge">
+            <i class="fas fa-clock me-1"></i>Busy
+        </span>
+        {% else %}
+        <span class="badge bg-danger availability-badge">
+            <i class="fas fa-times-circle me-1"></i>On Leave
+        </span>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Doctor Details Card -->
+    <div class="col-md-8">
+        <div class="card info-card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2 text-primary"></i>About Dr. {{ doctor.name }}</h5>
+            </div>
+            <div class="card-body">
+                {% if doctor.bio %}
+                <p>{{ doctor.bio }}</p>
+                {% else %}
+                <p class="text-muted">No bio available.</p>
+                {% endif %}
+                <hr>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <strong><i class="fas fa-briefcase me-2 text-primary"></i>Experience:</strong>
+                        <span>{{ doctor.experience_years }} years</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <strong><i class="fas fa-map-marker-alt me-2 text-primary"></i>City:</strong>
+                        <span>{{ doctor.city }}, {{ doctor.state }}</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <strong><i class="fas fa-phone me-2 text-primary"></i>Phone:</strong>
+                        <span>{{ doctor.phone }}</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <strong><i class="fas fa-envelope me-2 text-primary"></i>Email:</strong>
+                        <span>{{ doctor.email }}</span>
+                    </div>
+                    <div class="col-12">
+                        <strong><i class="fas fa-map me-2 text-primary"></i>Address:</strong>
+                        <span>{{ doctor.address }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Card -->
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-calendar-plus me-2"></i>Book Appointment</h5>
+            </div>
+            <div class="card-body text-center">
+                <p class="display-6 text-primary fw-bold">
+                    ₹{{ doctor.consultation_fee }}
+                </p>
+                <p class="text-muted">per consultation</p>
+                {% if doctor.availability == 'available' %}
+                {% if user.is_authenticated %}
+                <a href="{% url 'book_appointment' %}?doctor={{ doctor.id }}" class="btn btn-primary w-100">
+                    <i class="fas fa-calendar-check me-2"></i>Book Now
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}?next={% url 'book_appointment' %}" class="btn btn-primary w-100">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login to Book
+                </a>
+                {% endif %}
+                {% else %}
+                <button class="btn btn-secondary w-100" disabled>Not Available</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

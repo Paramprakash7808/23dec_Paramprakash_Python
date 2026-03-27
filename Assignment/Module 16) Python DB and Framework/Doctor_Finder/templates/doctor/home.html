@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+<!--
+  Practical 1: Render HTML file using Django's template system.
+              Displays "Welcome to Doctor Finder" on home page.
+  Practical 7: MVT - Template layer for home view.
+  Practical 9: Home page navigated via URL pattern.
+-->
+
+{% block title %}Welcome to Doctor Finder{% endblock %}
+
+{% block content %}
+<!-- Hero Section - Practical 1: "Welcome to Doctor Finder" -->
+<div class="hero-section text-center py-5 mb-4">
+    <h1 class="display-4 fw-bold text-primary">Welcome to Doctor Finder</h1>
+    <p class="lead text-muted">Find the best doctors near you. Book appointments instantly.</p>
+    <a href="{% url 'doctor_list' %}" class="btn btn-primary btn-lg me-2">
+        <i class="fas fa-search me-2"></i>Find a Doctor
+    </a>
+    <a href="{% url 'doctor_map' %}" class="btn btn-outline-primary btn-lg">
+        <i class="fas fa-map me-2"></i>View on Map
+    </a>
+</div>
+
+<!-- Features Section -->
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card text-center h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+                <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Expert Doctors</h5>
+                <p class="card-text">Find verified, experienced doctors across all specialties.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+                <i class="fas fa-calendar-check fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Easy Booking</h5>
+                <p class="card-text">Book appointments with one click, anytime anywhere.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+                <i class="fas fa-rupee-sign fa-3x text-warning mb-3"></i>
+                <h5 class="card-title">Secure Payment</h5>
+                <p class="card-text">Pay safely via Paytm for your consultations.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Available Doctors Section -->
+{% if doctors %}
+<h2 class="mb-4">Available Doctors</h2>
+<div class="row g-4">
+    {% for doctor in doctors %}
+    <div class="col-md-4">
+        <div class="card doctor-card h-100 shadow-sm">
+            <div class="card-body">
+                {% if doctor.profile_image %}
+                <img src="{{ doctor.profile_image.url }}" alt="{{ doctor.name }}"
+                     class="rounded-circle mb-3" width="80" height="80"
+                     style="object-fit:cover;">
+                {% else %}
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mb-3"
+                     style="width:80px;height:80px;font-size:2rem;">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                {% endif %}
+                <h5 class="card-title">Dr. {{ doctor.name }}</h5>
+                <p class="text-muted mb-1">
+                    <i class="fas fa-stethoscope me-1"></i>{{ doctor.get_specialty_display }}
+                </p>
+                <p class="text-muted mb-1">
+                    <i class="fas fa-map-marker-alt me-1"></i>{{ doctor.city }}
+                </p>
+                <p class="text-muted mb-2">
+                    <i class="fas fa-rupee-sign me-1"></i>{{ doctor.consultation_fee }} / consultation
+                </p>
+                <span class="badge bg-success mb-2">Available</span>
+            </div>
+            <div class="card-footer bg-white border-0 pb-3">
+                <a href="{% url 'doctor_profile' doctor.pk %}" class="btn btn-outline-primary btn-sm me-2">View Profile</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'book_appointment' %}?doctor={{ doctor.id }}" class="btn btn-primary btn-sm">Book Now</a>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-primary btn-sm">Book Now</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="text-center mt-4">
+    <a href="{% url 'doctor_list' %}" class="btn btn-outline-primary">View All Doctors</a>
+</div>
+{% endif %}
+{% endblock %}
