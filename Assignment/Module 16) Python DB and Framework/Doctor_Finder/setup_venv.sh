@@ -31,8 +31,12 @@ echo "[Step 5] Running database migrations (Practical 11)..."
 python manage.py makemigrations
 python manage.py migrate
 
-# Step 6: Collect static files
-echo "[Step 6] Collecting static files..."
+# Step 6: Seed sample doctor data (Practical 12: ORM CRUD Demo)
+echo "[Step 6] Seeding sample doctor records (Practical 12)..."
+python manage.py seed_doctors
+
+# Step 7: Collect static files
+echo "[Step 7] Collecting static files..."
 python manage.py collectstatic --noinput
 
 echo ""
