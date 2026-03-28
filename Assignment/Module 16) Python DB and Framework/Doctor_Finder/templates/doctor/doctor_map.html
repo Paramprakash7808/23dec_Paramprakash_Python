@@ -46,14 +46,22 @@
 
   <!-- Map Area -->
   <div class="col-md-9">
+    {% if google_maps_api_key == 'YOUR_GOOGLE_MAPS_API_KEY' %}
+    <div class="alert alert-warning border-2 p-4">
+      <h4 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Google Maps API Key Required</h4>
+      <p class="mb-0">The Google Maps API key is currently set to a placeholder. To view the map, please replace the key in <code>doctor_finder/settings.py</code> with a valid one from the <a href="https://console.cloud.google.com/google/maps-apis/credentials" target="_blank" class="alert-link">Google Cloud Console</a>.</p>
+    </div>
+    {% endif %}
     <div id="map"></div>
   </div>
 </div>
 
 <!-- Hidden JSON data passed from Django view -->
+{{ doctors_list|json_script:"doctors-data" }}
+
 <script>
   /* Practical 20: Doctor locations passed from Django view (views.py) */
-  const DOCTORS_DATA = {{ doctors_json|safe }};
+  const DOCTORS_DATA = JSON.parse(document.getElementById('doctors-data').textContent);
 </script>
 {% endblock %}
 

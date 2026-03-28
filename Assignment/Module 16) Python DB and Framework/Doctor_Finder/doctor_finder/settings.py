@@ -137,7 +137,9 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {'fields': 'id, name, email'}
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 # Practical 16: Paytm Payment Gateway configuration
-PAYTM_MERCHANT_KEY = 'YOUR_PAYTM_MERCHANT_KEY'
+# IMPORTANT: Replace these with real credentials from your Paytm Dashboard
+# For staging/testing, your key must be exactly 16 characters long.
+PAYTM_MERCHANT_KEY = 'STAGING_PAYTM_KEY'
 PAYTM_MERCHANT_ID = 'YOUR_PAYTM_MERCHANT_ID'
 PAYTM_WEBSITE = 'WEBSTAGING'  # Use 'DEFAULT' for production
 PAYTM_CHANNEL_ID = 'WEB'
@@ -146,6 +148,8 @@ PAYTM_TRANSACTION_URL = 'https://securegw-stage.paytm.in/order/process'
 PAYTM_API_URL = 'https://securegw-stage.paytm.in/merchant-status/getTxnStatus'
 
 # Practical 20: Google Maps API Key
+# IMPORTANT: Replace 'YOUR_GOOGLE_MAPS_API_KEY' with a real key from Google Cloud Console
+# Visit: https://console.cloud.google.com/google/maps-apis/credentials
 GOOGLE_MAPS_API_KEY = 'YOUR_GOOGLE_MAPS_API_KEY'
 
 # Email configuration for password reset (Practical 13)

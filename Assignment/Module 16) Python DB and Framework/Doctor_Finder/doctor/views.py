@@ -380,13 +380,12 @@ def initiate_payment(request, appointment_id):
     }
 
     # Practical 16: Generate Paytm checksum using paytmchecksum library
-    # Install via: pip install paytmchecksum  (already in requirements.txt)
     try:
         import paytmchecksum
         checksum = paytmchecksum.generateSignature(paytm_params, settings.PAYTM_MERCHANT_KEY)
-    except ImportError:
-        # Fallback for development/demo if library not installed
-        checksum = "DEMO_CHECKSUM_INSTALL_paytmchecksum_package"
+    except (ImportError, ValueError):
+        # Fallback for development/demo if library not installed OR key is invalid length (AES error)
+        checksum = "DEMO_CHECKSUM_FOR_DEVELOPMENT"
 
     paytm_params['CHECKSUMHASH'] = checksum
 
@@ -453,7 +452,7 @@ def doctor_map(request):
     Practical 20: Display doctor locations using Google Maps API.
     """
     doctors = Doctor.objects.exclude(latitude=None).exclude(longitude=None)
-    doctors_json = json.dumps([
+    doctors_list = [
         {
             'id': d.id,
             'name': f"Dr. {d.name}",
@@ -466,9 +465,9 @@ def doctor_map(request):
             'lng': float(d.longitude),
         }
         for d in doctors
-    ])
+    ]
     context = {
-        'doctors_json': doctors_json,
+        'doctors_list': doctors_list,
         'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
         'page_title': 'Doctor Locations Map',
     }
