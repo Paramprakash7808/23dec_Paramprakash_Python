@@ -1,0 +1,9 @@
+django>=4.2,<5.0
+djangorestframework
+requests
+django-cors-headers
+django-allauth
+twilio
+sendgrid
+stripe
+python-dotenv
