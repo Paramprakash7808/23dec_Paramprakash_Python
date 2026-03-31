@@ -1,103 +1,146 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Locator</title>
-    <!-- Use Google Fonts -->
+    <title>Doctor Finder Dashboard</title>
+    <!-- Use Google Fonts (Inter) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            color: #111827;
-            margin: 0;
-            padding: 0;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #2563eb, #1e40af);
-            color: white;
-            padding: 2rem 1rem;
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            font-weight: 700;
-        }
-
-        .header p {
-            margin-top: 0.5rem;
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .map-section {
-            max-width: 1200px;
-            margin: 3rem auto;
-            padding: 0 1rem;
-        }
-
-        .map-container {
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            background-color: white;
-            border: 1px solid #e5e7eb;
-        }
-
-        #map {
-            width: 100%;
-            height: 600px;
-            background-color: #e5e7eb;
-        }
-
-        .info-window {
-            padding: 10px;
-        }
-
-        .info-window h3 {
-            margin: 0 0 5px 0;
-            color: #1f2937;
-        }
-
-        .info-window p {
-            margin: 0;
-            color: #4b5563;
-            font-size: 0.95rem;
-        }
-    </style>
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="{% static 'doctor_finder/css/styles.css' %}">
 </head>
 <body>
 
-    <div class="header">
-        <h1>Find A Doctor</h1>
-        <p>Locate medical professionals near you.</p>
-    </div>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <h2>Doctor UI</h2>
+        <div class="nav-item active" data-target="doctors">
+            <span>&#128104;&#8205;&#9872;&#65039;</span> Doctors
+        </div>
+        <div class="nav-item" data-target="integrations">
+            <span>&#128279;</span> API Integrations
+        </div>
+        <div class="nav-item" data-target="map">
+            <span>&#128506;&#65039;</span> live Map
+        </div>
+    </aside>
 
-    <div class="map-section">
-        <div class="map-container">
-            <!-- Map Target -->
-            <div id="map"></div>
+    <!-- Main Active Content -->
+    <main class="main-content">
+
+        <!-- DOCTORS DIRECTORY (View 1) -->
+        <section id="doctors" class="view-section active">
+            <div class="header-top">
+                <h1>Doctors Directory</h1>
+                <button class="btn" id="addDoctorBtn">Add Doctor</button>
+            </div>
+            
+            <div class="data-grid" id="doctorGrid">
+                <!-- Javascript injects doctor cards here -->
+                <p>Loading doctors...</p>
+            </div>
+        </section>
+
+        <!-- API INTEGRATIONS (View 2) -->
+        <section id="integrations" class="view-section">
+            <div class="header-top">
+                <h1>Third-Party Integrations</h1>
+            </div>
+
+            <div class="data-grid">
+                
+                <!-- Weather Integration -->
+                <div class="card">
+                    <h3>OpenWeatherMap API</h3>
+                    <p>Fetch current weather data.</p>
+                    <input type="text" id="weatherCity" placeholder="City (e.g., London)">
+                    <button class="btn btn-small" id="weatherBtn">Check Weather</button>
+                    <div id="weatherResult" class="result-box">Response will appear here...</div>
+                </div>
+
+                <!-- GitHub Integration -->
+                <div class="card">
+                    <h3>GitHub API</h3>
+                    <p>Fetch top 3 user repositories.</p>
+                    <input type="text" id="githubUser" placeholder="Username (e.g., octocat)">
+                    <button class="btn btn-small" id="githubBtn">Get Repos</button>
+                    <div id="githubResult" class="result-box">Response will appear here...</div>
+                </div>
+
+                <!-- RestCountries Integration -->
+                <div class="card">
+                    <h3>RestCountries API</h3>
+                    <p>Fetch details about a country.</p>
+                    <input type="text" id="countryName" placeholder="Country (e.g., India)">
+                    <button class="btn btn-small" id="countryBtn">Get Details</button>
+                    <div id="countryResult" class="result-box">Response will appear here...</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- MAP VIEW (View 3) -->
+        <section id="map" class="view-section">
+            <div class="header-top">
+                <h1>Live Doctor Locations</h1>
+                <p>Markers will appear dynamically based on available Lat/Lng coordinates.</p>
+            </div>
+
+            <div class="card" style="padding: 0; overflow: hidden; border: none;">
+                <div id="map"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Doctor Creation / Edit Modal -->
+    <div class="modal-overlay" id="doctorModal">
+        <div class="modal">
+            <h2 id="modalTitle">Add Doctor</h2>
+            <form id="doctorForm">
+                <input type="hidden" id="doc_id">
+                
+                <label>Name</label>
+                <input type="text" id="doc_name" required>
+                
+                <label>Specialty</label>
+                <input type="text" id="doc_specialty" required>
+                
+                <label>Latitude (Optional)</label>
+                <input type="number" step="any" id="doc_lat">
+                
+                <label>Longitude (Optional)</label>
+                <input type="number" step="any" id="doc_lng">
+                
+                <div class="card-actions" style="margin-top: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-danger btn-small" id="cancelModal">Cancel</button>
+                    <button type="submit" class="btn btn-small">Save</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Replace 'YOUR_API_KEY' with a real Google Maps JS API Key for this to load fully interactively in production -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
-    <script>
-        // Load data from Django View
-        const doctorData = JSON.parse('{{ doctor_data|escapejs }}');
+    <!-- MAIN APP SCRIPT -->
+    <script src="{% static 'doctor_finder/js/app.js' %}"></script>
 
+    <!-- MAP INIT SCRIPT (For the inline map integration) -->
+    <!-- Replace YOUR_API_KEY with actual env var or key. Note: map div is mapContainer to match API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY" defer></script>
+    <script>
+        const doctorsJSONData = JSON.parse('{{ doctor_data|escapejs|default:"[]" }}');
+        let mapLoadedOnce = false;
+        
         function initMap() {
-            // Default center: coordinates roughly in the center of the US or a known location depending on your data
+            if (mapLoadedOnce) return;
+            if (typeof google === 'undefined') return;
+
+            mapLoadedOnce = true;
             let defaultLocation = { lat: 39.8283, lng: -98.5795 };
             let zoomLevel = 4;
 
-            if(doctorData.length > 0) {
-                defaultLocation = {lat: doctorData[0].lat, lng: doctorData[0].lng};
+            if(doctorsJSONData.length > 0) {
+                defaultLocation = {lat: doctorsJSONData[0].lat, lng: doctorsJSONData[0].lng};
                 zoomLevel = 10;
             }
 
@@ -107,13 +150,13 @@
                 mapTypeControl: false,
                 streetViewControl: false,
                 styles: [
-                    // Optional styling array to make Maps look premium/dark mode
-                    // You can copy/paste snazzymaps styles here!
+                    {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
+                    {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
+                    {elementType: 'labels.text.fill', stylers: [{color: '#746855'}]}
                 ]
             });
 
-            // Create markers
-            doctorData.forEach(doc => {
+            doctorsJSONData.forEach(doc => {
                 if (doc.lat && doc.lng) {
                     const marker = new google.maps.Marker({
                         position: { lat: doc.lat, lng: doc.lng },
@@ -121,19 +164,10 @@
                         title: doc.name,
                         animation: google.maps.Animation.DROP
                     });
-
-                    const infoWindow = new google.maps.InfoWindow({
-                        content: `
-                            <div class="info-window">
-                                <h3>${doc.name}</h3>
-                                <p><strong>Specialty:</strong> ${doc.specialty}</p>
-                            </div>
-                        `
+                    const btnInfo = new google.maps.InfoWindow({
+                        content: `<div style="color:black;font-family:Inter;"><b>${doc.name}</b><br/>${doc.specialty}</div>`
                     });
-
-                    marker.addListener("click", () => {
-                        infoWindow.open(map, marker);
-                    });
+                    marker.addListener('click', () => { btnInfo.open(map, marker); });
                 }
             });
         }

@@ -21,6 +21,5 @@ urlpatterns = [
     path('twilio/', views.TwilioOTPView.as_view(), name='api-twilio'),
     path('stripe/', views.StripePaymentView.as_view(), name='api-stripe'),
 
-    # Phase 5: Map Frontend View
-    path('map/', views.map_view, name='map-view'),
+    # Phase 5: Map/Dashboard View is now at the Project Root.
 ]

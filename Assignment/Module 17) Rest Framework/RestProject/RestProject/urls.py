@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from doctor_finder import views as doctor_views
 
 urlpatterns = [
+    path('', doctor_views.index_view, name='home'),
     path('admin/', admin.site.urls),
     # DRF routing
     path('api/', include('doctor_finder.urls')),

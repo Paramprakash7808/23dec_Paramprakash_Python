@@ -14,11 +14,11 @@ from sendgrid.helpers.mail import Mail, Email, To, Content
 import json
 
 # ================================
-# Phase 5: Map View Integration
+# Phase 5: Dashboard View Integration
 # ================================
-def map_view(request):
+def index_view(request):
     """
-    Lab 22: Google Maps Integration
+    Lab 22: Google Maps & Main Dashboard UI
     """
     doctors = Doctor.objects.all()
     doctor_data = [
@@ -63,7 +63,19 @@ class OpenWeatherView(APIView):
         api_key = settings.OPENWEATHERMAP_API_KEY
         url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
         response = requests.get(url)
-        return Response(response.json(), status=response.status_code)
+        
+        if response.status_code == 200:
+            return Response(response.json(), status=response.status_code)
+        else:
+            # Fallback to mock data if no valid API key is present
+            mock_data = {
+                "weather": [{"main": "Sunny", "description": "clear sky"}],
+                "main": {"temp": 32.5, "feels_like": 35.1, "humidity": 40},
+                "name": city,
+                "sys": {"country": "IN"},
+                "_note": "This is MOCK DATA because a valid OPENWEATHERMAP_API_KEY was not found in your settings!"
+            }
+            return Response(mock_data, status=200)
 
 class GeocodeView(APIView):
     """
