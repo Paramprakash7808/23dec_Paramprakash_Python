@@ -1,15 +1,12 @@
 #!/usr/bin/env python
-"""
-Django's command-line utility for administrative tasks.
-Practical 4: Understanding Django project structure.
-"""
+"""Django's command-line utility for administrative tasks."""
 import os
 import sys
 
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'doctor_finder.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'doctor.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

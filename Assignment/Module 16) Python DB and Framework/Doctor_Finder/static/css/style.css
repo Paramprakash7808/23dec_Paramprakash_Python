@@ -1,147 +1,296 @@
-/*
- * Doctor Finder - Custom CSS Stylesheet
- * Practical 2: CSS file to style basic HTML template in Django.
- *              Custom CSS styling for doctor profile page.
- */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* ── Global Styles ─────────────────────────────────────────── */
+:root {
+    --primary: #4f46e5;
+    --primary-light: #818cf8;
+    --primary-dark: #3730a3;
+    --secondary: #ec4899;
+    --accent: #f59e0b;
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --border-color: #e2e8f0;
+    --header-height: 80px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.06), 0 8px 10px -6px rgba(0,0,0,0.04);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base resets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
-    color: #333;
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-/* ── Hero Section (Home Page - Practical 1) ─────────────────── */
-.hero-section {
-    background: linear-gradient(135deg, #e8f4fd 0%, #d1ecf1 100%);
-    border-radius: 16px;
-    padding: 3rem 2rem;
-    margin-bottom: 2rem;
-    border: 1px solid #bee5eb;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
 }
 
-.hero-section h1 {
-    font-size: 2.5rem;
+/* Header & Nav Fixes */
+header {
+    height: var(--header-height);
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+    z-index: 1001;
+}
+
+/* Desktop Menu */
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 24px;
+    align-items: center;
+}
+
+.nav-links li a:not(.btn) {
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 8px 12px;
+    transition: var(--transition);
+    border-radius: var(--radius-sm);
+}
+
+.nav-links li a:not(.btn):hover {
+    background: rgba(79, 70, 229, 0.05);
+    color: var(--primary);
+}
+
+/* Hamburger Fix */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    z-index: 1100;
+}
+
+.hamburger span {
+    width: 28px;
+    height: 3px;
+    background: var(--text-main);
+    border-radius: 2px;
+    transition: var(--transition);
+}
+
+/* Mobile Menu Overhaul */
+@media (max-width: 1024px) {
+    .hamburger {
+        display: flex;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        max-width: 320px;
+        height: 100vh;
+        background: white;
+        flex-direction: column;
+        justify-content: center;
+        padding: 40px;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+        transition: right 0.5s cubic-bezier(0.77,0.2,0.05,1);
+        z-index: 1050;
+    }
+    
+    .nav-links.active {
+        right: 0;
+    }
+    
+    .nav-links li {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 20px;
+    }
+    
+    .nav-links li a {
+        font-size: 1.25rem;
+        display: block;
+        width: 100%;
+    }
+}
+
+/* Content Spacing */
+main {
+    margin-top: var(--header-height);
+    flex: 1;
+}
+
+/* Hero - No Overlap */
+.hero {
+    padding: 100px 0 80px;
+    text-align: center;
+    background: radial-gradient(circle at top left, #f5f3ff 0%, #ffffff 50%);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.hero h1 {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    line-height: 1.2;
     font-weight: 800;
-    color: #0d6efd;
-    text-shadow: 0 2px 4px rgba(13, 110, 253, 0.15);
+    margin-bottom: 24px;
+    letter-spacing: -2px;
+    color: #0f172a;
 }
 
-/* ── Doctor Cards (Practical 2) ──────────────────────────────── */
+.hero p {
+    font-size: clamp(1rem, 3vw, 1.25rem);
+    color: var(--text-muted);
+    max-width: 700px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+}
+
+/* Section Spacing */
+.section {
+    padding: 100px 0;
+}
+
+/* Doctor Card - Alignment Fix */
+.doctor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 32px;
+    margin-top: 40px;
+}
+
 .doctor-card {
-    border: none;
-    border-radius: 12px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    transition: var(--transition);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .doctor-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(13, 110, 253, 0.15) !important;
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-light);
 }
 
-/* ── Navigation Bar ─────────────────────────────────────────── */
-.navbar-brand {
-    font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+.doctor-img-container {
+    height: 260px;
+    background: #f1f5f9;
+    overflow: hidden;
+    position: relative;
 }
 
-/* ── Profile Page (Practical 2: Doctor Profile Page CSS) ──────── */
-.profile-header {
-    background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
-    color: white;
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
+.doctor-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
 }
 
-/* ── Form Styles (Practical 3 & 10 & 13) ───────────────────── */
-.form-control:focus,
-.form-select:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+.doctor-card:hover .doctor-img {
+    transform: scale(1.05);
 }
 
-.form-control.is-invalid {
-    border-color: #dc3545;
-    background-image: none;
+.doctor-info {
+    padding: 24px;
+    flex-grow: 1;
 }
 
-.invalid-feedback {
-    display: block;
-    color: #dc3545;
+.doctor-meta {
+    margin-top: auto;
+    border-top: 1px solid var(--border-color);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
     font-size: 0.85rem;
-    margin-top: 4px;
+    color: var(--text-muted);
+    background: #fafafa;
 }
 
-/* ── Cards ───────────────────────────────────────────────────── */
-.card {
-    border-radius: 10px;
-    border: 1px solid #e8ecef;
-}
-
-.card-header {
-    border-radius: 10px 10px 0 0 !important;
-    font-weight: 600;
-}
-
-/* ── Buttons ─────────────────────────────────────────────────── */
+/* Buttons */
 .btn {
-    border-radius: 8px;
-    font-weight: 500;
-    padding: 0.45rem 1.1rem;
-    transition: all 0.2s;
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    transition: var(--transition);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
 }
 
 .btn-primary {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+    background: var(--primary);
+    color: white;
 }
 
 .btn-primary:hover {
-    background-color: #0b5ed7;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+    background: var(--primary-dark);
+    filter: brightness(1.1);
 }
 
-/* ── Badges ──────────────────────────────────────────────────── */
-.badge {
-    border-radius: 20px;
-    padding: 0.35em 0.75em;
-    font-weight: 500;
+/* Form Styles */
+.form-container {
+    background: white;
+    padding: 48px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    max-width: 600px;
+    margin: 40px auto;
 }
 
-/* ── Admin Panel Customization hint (Practical 8, 15) ─────────── */
-/* These styles are for the public-facing site; admin styles are Django's */
-
-/* ── Table Styles (Practical 12, 14) ─────────────────────────── */
-.table th {
-    font-weight: 600;
-    background-color: #f0f4ff;
-}
-
-.table-hover tbody tr:hover {
-    background-color: #f0f8ff;
-}
-
-/* ── Footer ──────────────────────────────────────────────────── */
+/* Footer Fix */
 footer {
-    background: #1a1a2e !important;
-    padding: 1.5rem 0;
-}
-
-footer p {
-    color: #aaa;
-    font-size: 0.9rem;
-}
-
-/* ── Responsive: Mobile view ─────────────────────────────────── */
-@media (max-width: 576px) {
-    .hero-section h1 {
-        font-size: 1.8rem;
-    }
-    .profile-header {
-        flex-direction: column;
-        text-align: center;
-    }
+    background: #0f172a;
+    color: white;
+    padding: 80px 0 40px;
 }

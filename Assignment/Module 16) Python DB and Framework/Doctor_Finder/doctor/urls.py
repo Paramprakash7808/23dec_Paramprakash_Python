@@ -1,46 +1,30 @@
 """
-Doctor Finder - URL Patterns
-Practical 9: URL routing to navigate between pages (home, profile, contact)
-Practical 13: Authentication URLs
-Practical 14: AJAX CRUD URLs
-Practical 16: Payment URLs
-Practical 20: Google Maps URL
-"""
+URL configuration for doctor project.
 
-from django.urls import path
-from . import views
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/5.1/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
-    # ── Practical 1 & 9: Home Page ──────────────────────────────
-    path('', views.home, name='home'),
-
-    # ── Practical 9: Doctor pages ────────────────────────────────
-    path('doctors/', views.doctor_list, name='doctor_list'),
-    path('doctor/<int:pk>/', views.doctor_profile, name='doctor_profile'),
-    path('contact/', views.contact, name='contact'),
-
-    # ── Practical 13: Authentication URLs ────────────────────────
-    path('register/', views.register, name='register'),
-    path('login/', views.user_login, name='login'),
-    path('logout/', views.user_logout, name='logout'),
-    path('profile/', views.profile_update, name='profile_update'),
-    path('change-password/', views.change_password, name='change_password'),
-
-    # ── Practical 14: AJAX CRUD URLs ─────────────────────────────
-    path('manage-doctors/', views.ajax_crud_page, name='ajax_crud_page'),
-    path('ajax/doctors/', views.ajax_doctor_list, name='ajax_doctor_list'),
-    path('ajax/doctors/add/', views.ajax_add_doctor, name='ajax_add_doctor'),
-    path('ajax/doctors/<int:pk>/', views.ajax_get_doctor, name='ajax_get_doctor'),
-    path('ajax/doctors/<int:pk>/edit/', views.ajax_edit_doctor, name='ajax_edit_doctor'),
-    path('ajax/doctors/<int:pk>/delete/', views.ajax_delete_doctor, name='ajax_delete_doctor'),
-
-    # ── Appointment booking ──────────────────────────────────────
-    path('book-appointment/', views.book_appointment, name='book_appointment'),
-
-    # ── Practical 16: Paytm Payment URLs ─────────────────────────
-    path('payment/<int:appointment_id>/', views.initiate_payment, name='initiate_payment'),
-    path('payment/callback/<int:appointment_id>/', views.payment_callback, name='payment_callback'),
-
-    # ── Practical 20: Google Maps URL ────────────────────────────
-    path('map/', views.doctor_map, name='doctor_map'),
+    path('admin/', admin.site.urls),
+    path('', include('doctors_app.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
