@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Patient Registration - Doctor Finder{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">Patient Registration</h1>
+        <div class="form-container">
+            <form id="registrationForm" action="{% url 'account_signup' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" class="form-input" required>
+                    <div id="usernameError" class="error-message">Username is required.</div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                    <div id="emailError" class="error-message">Please enter a valid email address.</div>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" id="phone" name="phone" class="form-input" required>
+                    <div id="phoneError" class="error-message">Please enter a valid 10-digit phone number.</div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                    <div id="passwordError" class="error-message">Password must be at least 8 characters long.</div>
+                </div>
+                <div class="form-group">
+                    <label for="id_password_confirm">Confirm Password</label>
+                    <input type="password" id="id_password_confirm" name="password_confirm" class="form-input" required>
+                    <div id="confirmPasswordError" class="error-message">Passwords do not match.</div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Register</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/validation.js' %}"></script>
+{% endblock %}

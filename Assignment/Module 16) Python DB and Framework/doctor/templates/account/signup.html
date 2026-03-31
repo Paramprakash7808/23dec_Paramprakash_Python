@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block title %}{% trans "Sign Up" %} - Doctor Finder{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 80px; padding-bottom: 120px;">
+    <div class="form-container" style="max-width: 500px; padding: 60px;">
+        <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 8px; text-align: center;">{% trans "Get Started Today" %}</h1>
+        <p style="color: var(--text-muted); text-align: center; margin-bottom: 40px;">{% trans "Create an account to join our expert community." %}</p>
+
+        {% get_providers as socialaccount_providers %}
+        {% if socialaccount_providers %}
+            <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px;">
+                {% include "socialaccount/snippets/provider_list.html" with process="signup" %}
+            </div>
+            
+            <div style="display: flex; align-items: center; margin-bottom: 32px; gap: 16px;">
+                <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
+                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">{% trans "OR CONTINUE WITH EMAIL" %}</span>
+                <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
+            </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'account_signup' %}" style="display: flex; flex-direction: column; gap: 20px;">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div style="background: #fee2e2; color: #ef4444; padding: 12px; border-radius: 8px; font-size: 0.9rem; margin-bottom: 16px;">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            
+            {% for field in form %}
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-input" placeholder="{{ field.label }}" required>
+                    {% if field.errors %}
+                        <p style="color: #ef4444; font-size: 0.8rem; margin-top: 4px;">{{ field.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary" style="height: 54px; margin-top: 10px; font-size: 1rem; width: 100%;">
+                {% trans "Create Account" %}
+            </button>
+        </form>
+
+        <p style="text-align: center; margin-top: 32px; font-size: 0.95rem; color: var(--text-muted);">
+            {% trans "Already have an account?" %} 
+            <a href="{{ login_url }}" style="color: var(--primary); font-weight: 700; text-decoration: none;">{% trans "Sign In" %}</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

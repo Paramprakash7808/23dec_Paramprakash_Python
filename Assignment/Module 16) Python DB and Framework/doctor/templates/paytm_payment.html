@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Paytm Secure Checkout - Doctor Finder{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 100px 0; display: flex; align-items: center; justify-content: center; min-height: 80vh;">
+    <div style="background: white; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); width: 100%; max-width: 480px; padding: 48px; border: 1px solid #e2e8f0; position: relative; overflow: hidden;">
+        <!-- Header Decor -->
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(to right, #00b9f5, #002e6e);"></div>
+        
+        <div style="text-align: center; margin-bottom: 40px;">
+            <div style="font-size: 2.5rem; font-weight: 800; color: #00b9f5; margin-bottom: 8px;">Pay<span style="color: #002e6e;">tm</span></div>
+            <div style="width: 100px; height: 2px; background: #f1f5f9; margin: 0 auto; margin-bottom: 24px;"></div>
+            <h2 style="font-size: 1.25rem; font-weight: 700; color: #1e293b;">Secure Payment Gateway</h2>
+            <p style="color: #64748b; font-size: 0.9rem; margin-top: 8px;">Order ID: {{ order_id }}</p>
+        </div>
+
+        <div style="background: #f8fafc; border-radius: 16px; padding: 24px; margin-bottom: 32px; border: 1px dashed #cbd5e1;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                <span style="color: #64748b;">Appointment with:</span>
+                <span style="font-weight: 700; color: #1e293b;">Dr. {{ appointment.doctor.name }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                <span style="color: #64748b;">Specialty:</span>
+                <span style="font-weight: 600; color: #4f46e5;">{{ appointment.doctor.specialty.name }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                <span style="font-weight: 700; color: #1e293b;">Total Amount:</span>
+                <span style="font-weight: 800; color: #1e293b; font-size: 1.2rem;">{{ currency }} {{ amount }}</span>
+            </div>
+        </div>
+
+        <div id="paymentStatus" style="display: none; text-align: center; margin-bottom: 24px;">
+            <div class="loader" style="border: 4px solid #f3f3f3; border-top: 4px solid #00b9f5; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
+            <p style="font-weight: 600; color: #002e6e;">Processing your transaction...</p>
+        </div>
+
+        <div id="actionButtons">
+            <button onclick="processPayment()" class="btn" style="width: 100%; height: 56px; background: #00b9f5; color: white; font-weight: 700; font-size: 1.1rem; border-radius: 12px; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 14px rgba(0, 185, 245, 0.4);">
+                Pay Now
+            </button>
+            <p style="text-align: center; margin-top: 16px; font-size: 0.8rem; color: #94a3b8;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:relative; top:2px; margin-right:4px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                Secure 256-bit encrypted transaction
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 185, 245, 0.5);
+        background: #00a3d9;
+    }
+</style>
+
+<script>
+    function processPayment() {
+        // Show loader, hide button
+        document.getElementById('actionButtons').style.display = 'none';
+        document.getElementById('paymentStatus').style.display = 'block';
+
+        // Simulate network delay for realism
+        setTimeout(() => {
+            fetch("{% url 'paytm_callback' appointment.id %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'payment_verified') {
+                    window.location.href = data.redirect_url;
+                }
+            });
+        }, 2500);
+    }
+</script>
+{% endblock %}

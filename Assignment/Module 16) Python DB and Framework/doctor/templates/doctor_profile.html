@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dr. {{ doctor.name }} - Doctor Finder{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
+        padding: 40px;
+        box-shadow: var(--shadow-md);
+        display: flex;
+        gap: 40px;
+        align-items: center;
+        margin-top: 40px;
+    }
+    .profile-img-lg {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--primary-light);
+    }
+    .save-btn {
+        background: #f1f5f9;
+        border: none;
+        padding: 12px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .save-btn.active {
+        background: #fee2e2;
+        color: #ef4444;
+    }
+    .save-btn:hover {
+        transform: scale(1.1);
+    }
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-top: 32px;
+    }
+    .info-item {
+        background: #f8fafc;
+        padding: 16px;
+        border-radius: var(--radius-md);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-bottom: 100px;">
+    <!-- Main Profile Header -->
+    <div class="profile-card">
+        {% if doctor.profile_pic %}
+            <img src="{{ doctor.profile_pic.url }}" alt="{{ doctor.name }}" class="profile-img-lg">
+        {% else %}
+            <div class="profile-img-lg" style="background:#eee; display:flex; align-items:center; justify-content:center; font-size:4rem; color:#aaa;">{{ doctor.name|slice:":1" }}</div>
+        {% endif %}
+        
+        <div style="flex: 1;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div>
+                    <span style="color: var(--primary); font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">{{ doctor.specialty.name }}</span>
+                    <h1 style="font-size: 2.5rem; font-weight: 800; margin: 4px 0;">Dr. {{ doctor.name }}</h1>
+                    <p style="color: var(--text-muted);">{{ doctor.experience_years }} Years of Experience</p>
+                </div>
+                <button id="saveBtn" onclick="toggleSave('{{ doctor.id }}')" class="save-btn {% if saved %}active{% endif %}">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="{% if saved %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Availability</label>
+                    <p style="font-weight: 600;">{{ doctor.availability }}</p>
+                </div>
+                <div class="info-item">
+                    <label style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Location</label>
+                    <p style="font-weight: 600;">{{ doctor.location_name }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Grid -->
+    <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; margin-top: 40px;">
+        <div style="display: flex; flex-direction: column; gap: 40px;">
+            <!-- Bio Section -->
+            <div style="background: white; padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                <h3 style="font-weight: 800; margin-bottom: 20px;">About Dr. {{ doctor.name }}</h3>
+                <p style="line-height: 1.8; color: var(--text-main);">{{ doctor.bio }}</p>
+            </div>
+
+            <!-- Map Section -->
+            <div style="background: white; padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                <h3 style="font-weight: 800; margin-bottom: 20px;">Clinic Location</h3>
+                <div id="map-container" style="position: relative; height: 350px; border-radius:12px; background:#f1f5f9; overflow: hidden;">
+                    <div id="map" style="height: 100%; width: 100%;"></div>
+                    <!-- Professional Fallback for missing API Key (Lab 19) -->
+                    <div id="map-fallback" style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); display:flex; flex-direction:column; align-items:center; justify-content:center; color:#475569; text-align:center; padding:20px;">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:16px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <h4 style="font-weight:700; margin-bottom:4px;">Map Loading...</h4>
+                        <p style="font-size:0.8rem; opacity:0.8;">[Note: To see the live interactive map, ensure a valid <br> Google Maps API key is provided in doctor_profile.html]</p>
+                        <p style="font-size:0.85rem; font-weight:600; margin-top:12px;">Location: {{ doctor.location_name }}</p>
+                    </div>
+                </div>
+                <p style="margin-top: 16px; font-weight: 600; color: var(--text-muted);">{{ doctor.location_name }}</p>
+            </div>
+        </div>
+
+        <!-- Appointment Section -->
+        <div style="background: white; padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); position: sticky; top: 120px;">
+            <h3 style="font-weight: 800; margin-bottom: 8px;">Book an Appointment</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 32px;">Schedule your visit in just a few clicks.</p>
+            
+            <form action="{% url 'book_appointment' doctor.id %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="date">Select Date</label>
+                    <input type="date" id="date" name="date" class="form-input" required min="{% now 'Y-m-d' %}">
+                </div>
+                <div class="form-group">
+                    <label for="time">Preferred Time</label>
+                    <input type="time" id="time" name="time" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Notes for Doctor (Optional)</label>
+                    <textarea id="message" name="message" class="form-input" rows="3" placeholder="Briefly describe your symptoms..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; height: 54px; margin-top: 10px;">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap"></script>
+
+<script>
+    function toggleSave(id) {
+        fetch(`/doctors/${id}/save/`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const btn = document.getElementById('saveBtn');
+            const svg = btn.querySelector('svg');
+            if (data.status === 'wrapped') {
+                btn.classList.add('active');
+                svg.setAttribute('fill', 'currentColor');
+            } else {
+                btn.classList.remove('active');
+                svg.setAttribute('fill', 'none');
+            }
+        });
+    }
+
+    function initMap() {
+        const doctorLat = parseFloat("{{ doctor.latitude|default:0 }}");
+        const doctorLng = parseFloat("{{ doctor.longitude|default:0 }}");
+        
+        const doctorLocation = { lat: doctorLat, lng: doctorLng };
+        
+        if (doctorLocation.lat !== 0 && doctorLocation.lng !== 0) {
+            // Hide fallback UI (Lab 19)
+            const fallback = document.getElementById('map-fallback');
+            if (fallback) fallback.style.display = 'none';
+
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: doctorLocation,
+            });
+
+            new google.maps.Marker({
+                position: doctorLocation,
+                map: map,
+                title: "Dr. {{ doctor.name }}",
+            });
+        }
+    }
+</script>
+{% endblock %}
