@@ -1,226 +1,262 @@
-from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
-from django.conf import settings
-from django.shortcuts import render
+from rest_framework import status, generics, permissions
+import requests
+import os
+from dotenv import load_dotenv
 from .models import Doctor
 from .serializers import DoctorSerializer
-import requests
-import stripe
-from twilio.rest import Client
-import sendgrid
-from sendgrid.helpers.mail import Mail, Email, To, Content
-import json
+from django.shortcuts import render
 
-# ================================
-# Phase 5: Dashboard View Integration
-# ================================
-def index_view(request):
-    """
-    Lab 22: Google Maps & Main Dashboard UI
-    """
-    doctors = Doctor.objects.all()
-    doctor_data = [
-        {"name": d.name, "lat": d.latitude, "lng": d.longitude, "specialty": d.specialty}
-        for d in doctors if d.latitude is not None and d.longitude is not None
-    ]
-    return render(request, 'doctor_finder/index.html', {'doctor_data': json.dumps(doctor_data)})
+load_dotenv()
 
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
 
-# ================================
-# Phase 3: Doctor CRUD Views
-# ================================
+class DashboardView(APIView):
+    permission_classes = [permissions.AllowAny]
+    def get(self, request):
+        return render(request, 'index.html')
+
+class RegisterView(APIView):
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        email = request.data.get('email')
+        if not username or not password:
+            return Response({"error": "Missing username or password"}, status=status.HTTP_400_BAD_REQUEST)
+        if User.objects.filter(username=username).exists():
+            return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.create_user(username=username, password=password, email=email)
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({"token": token.key, "user_id": user.pk, "email": user.email})
+
+class LoginView(APIView):
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(username=username, password=password)
+        if user:
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({"token": token.key, "user_id": user.pk})
+        return Response({"error": "Invalid Credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+class LogoutView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def post(self, request):
+        request.user.auth_token.delete()
+        return Response({"message": "Successfully logged out"})
 
 class DoctorListCreateView(generics.ListCreateAPIView):
-    """
-    Lab 5 & 7 & 12: View to List and Create Doctor Profiles with Pagination.
-    """
-    queryset = Doctor.objects.all()
+    queryset = Doctor.objects.all().order_by('-created_at')
     serializer_class = DoctorSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly] # Lab 13: Limit access somewhat
+    # AllowAny for now so the user can easily test
+    permission_classes = [permissions.AllowAny]
 
 class DoctorRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Lab 5 & 12: View to Read, Update, Delete Doctor Profiles.
-    """
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
 
-# ================================
-# Phase 4: Third-Party API Integrations
-# ================================
+# --- Integration Views ---
 
-class OpenWeatherView(APIView):
-    """
-    Lab 14: Fetch OpenWeatherMap Data.
-    Expected usage: /api/weather/?city=London
-    """
-    permission_classes = [AllowAny]
+class WeatherView(APIView):
     def get(self, request):
-        city = request.query_params.get('city', 'New York')
-        api_key = settings.OPENWEATHERMAP_API_KEY
-        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
-        response = requests.get(url)
+        city = request.query_params.get('city', 'London')
         
-        if response.status_code == 200:
-            return Response(response.json(), status=response.status_code)
-        else:
-            # Fallback to mock data if no valid API key is present
-            mock_data = {
-                "weather": [{"main": "Sunny", "description": "clear sky"}],
-                "main": {"temp": 32.5, "feels_like": 35.1, "humidity": 40},
-                "name": city,
-                "sys": {"country": "IN"},
-                "_note": "This is MOCK DATA because a valid OPENWEATHERMAP_API_KEY was not found in your settings!"
-            }
-            return Response(mock_data, status=200)
+        # 1. Get coordinates for the city (Free Open-Meteo Geocoding API)
+        geocode_url = f"https://geocoding-api.open-meteo.com/v1/search?name={city}&count=1&language=en&format=json"
+        try:
+            geo_response = requests.get(geocode_url)
+            geo_data = geo_response.json()
+            
+            if not geo_data.get('results'):
+                return Response({"error": f"City '{city}' not found"}, status=status.HTTP_404_NOT_FOUND)
+                
+            location = geo_data['results'][0]
+            lat = location['latitude']
+            lon = location['longitude']
+            country = location.get('country', '')
+            
+            # 2. Get current weather for the coordinates (Free Open-Meteo Weather API)
+            weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true"
+            weather_response = requests.get(weather_url)
+            weather_data = weather_response.json()
+            
+            if 'current_weather' in weather_data:
+                current = weather_data['current_weather']
+                return Response({
+                    "city": f"{location.get('name', city)}",
+                    "country": country,
+                    "temperature_celsius": current.get('temperature'),
+                    "windspeed_kmh": current.get('windspeed'),
+                    "status": "Success",
+                    "source": "Open-Meteo (Free API)"
+                })
+            else:
+                return Response({"error": "Failed to retrieve weather data"}, status=status.HTTP_400_BAD_REQUEST)
+                
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class GeocodeView(APIView):
-    """
-    Lab 15: Google Maps Geocoding API.
-    Expected usage: /api/geocode/?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA
-    *Uses OpenStreetMap Nominatim as fallback for demonstration so you don't need real CC API keys initially*
-    """
-    permission_classes = [AllowAny]
+class GeocodingView(APIView):
     def get(self, request):
-        address = request.query_params.get('address', '')
-        # Using free Nominatim to fulfill the "convert address to lat long requirement" without billing issues
+        address = request.query_params.get('address', 'Surat, Gujarat, India')
+        
+        # Using free Nominatim (OpenStreetMap) API instead of requiring Google Maps API key
         url = f"https://nominatim.openstreetmap.org/search?q={address}&format=json&limit=1"
+        headers = {'User-Agent': 'DjangoRestApp/1.0'}
         try:
-            response = requests.get(url, headers={'User-Agent': 'Tops_Assignment_App'})
+            response = requests.get(url, headers=headers)
             data = response.json()
-            if data:
-                return Response({'latitude': data[0]['lat'], 'longitude': data[0]['lon']})
-            return Response({'error': 'Address not found'}, status=404)
+            if not data:
+                return Response({"error": "Address not found"}, status=status.HTTP_404_NOT_FOUND)
+            
+            return Response({
+                "results": [{
+                    "formatted_address": data[0].get('display_name'),
+                    "geometry": {
+                        "location": {
+                            "lat": float(data[0]['lat']),
+                            "lng": float(data[0]['lon'])
+                        }
+                    }
+                }],
+                "status": "OK",
+                "source": "Nominatim (OpenStreetMap)"
+            })
         except Exception as e:
-            return Response({'error': str(e)}, status=500)
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-class GitHubIntegrationView(APIView):
-    """
-    Lab 16: GitHub API Integration.
-    Create a repository or retrieve user data.
-    """
-    permission_classes = [AllowAny]
-    def post(self, request):
-        token = settings.GITHUB_API_TOKEN
-        repo_name = request.data.get('repo_name', 'rest-framework-lab-repo')
-        
-        headers = {
-            'Authorization': f'token {token}',
-            'Accept': 'application/vnd.github.v3+json',
-        }
-        
-        url = "https://api.github.com/user/repos"
-        payload = {"name": repo_name, "private": False}
-        
-        response = requests.post(url, json=payload, headers=headers)
-        return Response(response.json(), status=response.status_code)
-
+class GitHubRepoView(APIView):
     def get(self, request):
-        username = request.query_params.get('username', 'octocat')
+        username = request.query_params.get('username', 'google')
         url = f"https://api.github.com/users/{username}/repos"
-        response = requests.get(url)
-        return Response(response.json(), status=response.status_code)
+        try:
+            response = requests.get(url)
+            # Retrieve limited data for list
+            repos = [{"name": r["name"], "url": r["html_url"]} for r in response.json()[:10]]
+            return Response(repos)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-class TwitterIntegrationView(APIView):
-    """
-    Lab 17: Fetch recent tweets.
-    Since Twitter API has strict paid tiers, this returns mocked data for demonstration
-    unless a real bearer token is somehow provided.
-    """
-    permission_classes = [AllowAny]
+class CountryDetailView(APIView):
     def get(self, request):
-        username = request.query_params.get('username', 'example_user')
-        mock_tweets = [
-            {"id": 1, "text": f"Hello world from {username}!"},
-            {"id": 2, "text": "Learning Django REST Framework is awesome!"},
-            {"id": 3, "text": "Just completed my API integration lab."},
-        ]
-        return Response({"user": username, "tweets": mock_tweets})
-
-class RestCountriesView(APIView):
-    """
-    Lab 18: Fetch country details.
-    Expected usage: /api/country/?name=india
-    """
-    permission_classes = [AllowAny]
-    def get(self, request):
-        country_name = request.query_params.get('name', 'india')
-        url = f"https://restcountries.com/v3.1/name/{country_name}"
-        response = requests.get(url)
-        
-        if response.status_code == 200:
+        country = request.query_params.get('country', 'India')
+        # Use fullText=true to prevent matching "British Indian Ocean Territory" when searching for "India"
+        url = f"https://restcountries.com/v3.1/name/{country}?fullText=true"
+        try:
+            response = requests.get(url)
             data = response.json()[0]
-            # Extract population, language, currency
-            currencies = data.get('currencies', {})
-            languages = data.get('languages', {})
-            
-            summary = {
-                "name": data.get("name", {}).get("common"),
-                "population": data.get("population"),
-                "currency": currencies,
-                "languages": languages
+            result = {
+                "name": data["name"]["common"],
+                "population": data["population"],
+                "capital": data.get("capital", ["N/A"])[0],
+                "region": data["region"]
             }
-            return Response(summary)
-        return Response({"error": "Country not found"}, status=response.status_code)
+            return Response(result)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-class SendGridEmailView(APIView):
-    """
-    Lab 19: Send Email using Sendgrid
-    """
-    permission_classes = [AllowAny]
+class SendOTPView(APIView):
     def post(self, request):
-        to_email = request.data.get('email', 'test@example.com')
-        sg = sendgrid.SendGridAPIClient(api_key=settings.SENDGRID_API_KEY)
-        from_email = Email("your_verified_email@example.com")
-        to_email = To(to_email)
-        subject = "Registration Confirmation"
-        content = Content("text/plain", "Thanks for registering at Doctor Finder!")
-        mail = Mail(from_email, to_email, subject, content)
+        phone = request.data.get('phone')
+        sid = os.getenv('TWILIO_ACCOUNT_SID')
+        token = os.getenv('TWILIO_AUTH_TOKEN')
+        from_phone = os.getenv('TWILIO_PHONE_NUMBER', '+1234567890')
         
-        try:
-            response = sg.client.mail.send.post(request_body=mail.get())
-            return Response({"message": "Email sent"}, status=response.status_code)
-        except Exception as e:
-            return Response({"error": str(e)}, status=500)
-
-class TwilioOTPView(APIView):
-    """
-    Lab 20: Send OTP via Twilio
-    """
-    permission_classes = [AllowAny]
-    def post(self, request):
-        phone_number = request.data.get('phone_number')
-        if not phone_number:
-            return Response({"error": "phone_number required"}, status=400)
+        if not sid or not token or sid == 'your_twilio_sid':
+            return Response({"error": "Missing TWILIO_ACCOUNT_SID or TWILIO_AUTH_TOKEN in .env", "hint": "Please add keys to use actual SMS sending."}, status=status.HTTP_501_NOT_IMPLEMENTED)
             
-        client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
         try:
+            from twilio.rest import Client
+            client = Client(sid, token)
             message = client.messages.create(
-                body="Your OTP for Doctor Finder is: 123456",
-                from_=settings.TWILIO_PHONE_NUMBER,
-                to=phone_number
+                body="Your OTP is 123456",
+                from_=from_phone,
+                to=phone
             )
-            return Response({"message": "OTP Sent", "sid": message.sid})
+            return Response({"message": f"OTP successfully sent to {phone}. Message SID: {message.sid}"})
         except Exception as e:
-            return Response({"error": str(e)}, status=500)
+            return Response({"error": f"Twilio Error: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
+class TwitterLatestTweetsView(APIView):
+    def get(self, request):
+        username = request.query_params.get('username', 'elonmusk')
+        bearer_token = os.getenv('TWITTER_BEARER_TOKEN')
+        
+        if not bearer_token or bearer_token == 'your_twitter_token':
+            return Response({"error": "Missing TWITTER_BEARER_TOKEN in .env", "hint": "Twitter API v2 requires an active dev account & bearer token."}, status=status.HTTP_501_NOT_IMPLEMENTED)
+            
+        try:
+            import tweepy
+            client = tweepy.Client(bearer_token=bearer_token)
+            # Fetch user ID first
+            user_response = client.get_user(username=username)
+            if not user_response.data:
+                return Response({"error": "Twitter user not found"}, status=status.HTTP_404_NOT_FOUND)
+                
+            user_id = user_response.data.id
+            tweets_response = client.get_users_tweets(user_id, max_results=5)
+            
+            if tweets_response.data:
+                tweets = [t.text for t in tweets_response.data]
+            else:
+                tweets = []
+                
+            return Response({"tweets": tweets, "user": username})
+        except Exception as e:
+            return Response({"error": f"Twitter API Error: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+import stripe
 class StripePaymentView(APIView):
-    """
-    Lab 21: Stripe Payment intent creation for booking
-    """
-    permission_classes = [AllowAny]
     def post(self, request):
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-        amount = request.data.get('amount', 5000) # 5000 cents = $50
+        amount = request.data.get('amount', 500) # In cents
+        stripe_key = os.getenv('STRIPE_SECRET_KEY')
+        
+        if not stripe_key or stripe_key == 'your_stripe_key':
+            return Response({"error": "Missing STRIPE_SECRET_KEY in .env", "hint": "Provide a Stripe test key like sk_test_..."}, status=status.HTTP_501_NOT_IMPLEMENTED)
+            
+        stripe.api_key = stripe_key
         try:
             intent = stripe.PaymentIntent.create(
                 amount=amount,
                 currency='usd',
-                metadata={'integration_check': 'accept_a_payment'},
+                payment_method_types=['card'],
             )
-            return Response({"client_secret": intent.client_secret})
+            return Response({
+                "message": f"Payment intention created successfully.",
+                "client_secret": intent.client_secret,
+                "amount": amount/100,
+                "status": intent.status
+            })
         except Exception as e:
-            return Response({"error": str(e)}, status=500)
+            return Response({"error": f"Stripe Error: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+class GitHubRepoCreateView(APIView):
+    def post(self, request):
+        repo_name = request.data.get('name', 'new-repo')
+        token = os.getenv('GITHUB_TOKEN')
+        
+        if not token or token == 'your_github_token':
+            return Response({"error": "Missing GITHUB_TOKEN in .env", "hint": "Provide a Personal Access Token with repo scope."}, status=status.HTTP_501_NOT_IMPLEMENTED)
+            
+        url = "https://api.github.com/user/repos"
+        headers = {
+            "Authorization": f"token {token}",
+            "Accept": "application/vnd.github.v3+json"
+        }
+        data = {
+            "name": repo_name,
+            "description": "Created via Django REST Framework API",
+            "private": False
+        }
+        try:
+            response = requests.post(url, headers=headers, json=data)
+            if response.status_code == 201:
+                return Response({"message": f"Repository '{repo_name}' created successfully on GitHub!", "url": response.json().get('html_url')})
+            else:
+                return Response({"error": "GitHub API failed", "details": response.json()}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

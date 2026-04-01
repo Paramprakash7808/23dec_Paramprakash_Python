@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 17: Django REST Framework Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #22d3ee;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 1.5rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .card h3 {
+            color: var(--accent);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(15, 23, 42, 0.5);
+            color: white;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background-color: #475569;
+        }
+
+        .result-box {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(15, 23, 42, 0.8);
+            border-radius: 0.5rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        #map {
+            height: 300px;
+            width: 100%;
+            border-radius: 0.5rem;
+            background-color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Doctor Finder & API Hub</h1>
+            <p>Comprehensive Dashboard for Module 17 Labs</p>
+        </div>
+
+        <div class="nav-links">
+            <a href="#joke">Joke API</a>
+            <a href="#auth">Auth</a>
+            <a href="#doctors">Doctor CRUD</a>
+            <a href="#integrations">Integrations</a>
+        </div>
+
+        <div class="grid">
+            <!-- Lab 1: Joke API -->
+            <div class="card" id="joke">
+                <h3>Lab 1: Joke API</h3>
+                <p style="margin-bottom: 1rem;">Fetch a random joke from the public API.</p>
+                <button onclick="fetchJoke()">Get Joke</button>
+                <div id="jokeResult" class="result-box">Click the button to see a joke...</div>
+            </div>
+
+            <!-- Lab 13: Authentication -->
+            <div class="card" id="auth">
+                <h3>Lab 13: User Authentication</h3>
+                <div id="authForms">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="username" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password" placeholder="Enter password">
+                    </div>
+                    <button onclick="handleRegister()">Register</button>
+                    <button class="btn-secondary" onclick="handleLogin()">Login</button>
+                </div>
+                <div id="userInfo" style="display: none;">
+                    <p>Logged in as: <span id="currentUser"></span></p>
+                    <button onclick="handleLogout()">Logout</button>
+                </div>
+                <div id="authResult" class="result-box">Ready...</div>
+            </div>
+
+            <!-- Labs 3-7, 11-12: Doctor CRUD -->
+            <div class="card" id="doctors">
+                <h3>Labs 3-6: Doctor CRUD</h3>
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="docName" placeholder="Dr. John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Specialty</label>
+                    <input type="text" id="docSpecialty" placeholder="Cardiology">
+                </div>
+                <div class="form-group">
+                    <label>Contact</label>
+                    <input type="text" id="docContact" placeholder="john@example.com">
+                </div>
+                <button onclick="addDoctor()">Add Doctor (POST)</button>
+                <button class="btn-secondary" onclick="listDoctors()">List Doctors (GET)</button>
+                <div id="doctorResult" class="result-box">Manage your doctors here...</div>
+            </div>
+
+            <!-- Labs 14-18: Third Party Integrations -->
+            <div class="card" id="integrations">
+                <h3>Labs 14-18: API Integrations</h3>
+                <div class="form-group">
+                    <label>City for Weather</label>
+                    <input type="text" id="cityInput" value="Surat">
+                    <button onclick="fetchWeather()">Get Weather</button>
+                </div>
+                <div class="form-group">
+                    <label>GitHub Username</label>
+                    <input type="text" id="githubUser" value="python">
+                    <button onclick="fetchGitHub()">List Repos</button>
+                </div>
+                <div class="form-group">
+                    <label>Country Name</label>
+                    <input type="text" id="countryInput" value="India">
+                    <button onclick="fetchCountry()">Get Data</button>
+                </div>
+                <div id="integrationResult" class="result-box">Integration results will appear here...</div>
+            </div>
+
+             <!-- Labs 10, 19, 20: Notifications & Payments -->
+             <div class="card" id="notif-pay">
+                <h3>Labs 19-21: Notif & Payments</h3>
+                <div class="form-group">
+                    <label>Phone for OTP</label>
+                    <input type="text" id="phoneInput" placeholder="+91 1234567890">
+                    <button onclick="sendOTP()">Send OTP (Twilio)</button>
+                </div>
+                <div class="form-group">
+                    <label>Payment Amount ($)</label>
+                    <input type="number" id="payAmount" value="50">
+                    <button onclick="processPayment()">Pay with Stripe</button>
+                </div>
+                <div id="notifPayResult" class="result-box">Process notifications and payments...</div>
+            </div>
+
+            <!-- Lab 22-23: Google Maps -->
+            <div class="card" id="map-section">
+                <h3>Lab 22: Google Maps</h3>
+                <div class="form-group">
+                    <label>Address to Geocode</label>
+                    <input type="text" id="addressInput" value="Tops Technologies, Surat">
+                    <button onclick="fetchGeocode()">Geocode Address</button>
+                </div>
+                <div id="map">Map View Placeholder</div>
+                <div id="mapResult" class="result-box">Coordinates will show here...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let authToken = null;
+
+        async function fetchJoke() {
+            const resBox = document.getElementById('jokeResult');
+            resBox.innerText = 'Fetching...';
+            try {
+                const res = await fetch('https://official-joke-api.appspot.com/random_joke');
+                const data = await res.json();
+                resBox.innerText = `${data.setup}\n\n${data.punchline}`;
+            } catch (e) {
+                resBox.innerText = 'Error: ' + e;
+            }
+        }
+
+        async function handleRegister() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            const result = document.getElementById('authResult');
+            try {
+                const res = await fetch(`${API_BASE}/register/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p, email: u + '@example.com' })
+                });
+                const data = await res.json();
+                result.innerText = JSON.stringify(data, null, 2);
+            } catch (e) { result.innerText = 'Error: ' + e; }
+        }
+
+        async function handleLogin() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            const result = document.getElementById('authResult');
+            try {
+                const res = await fetch(`${API_BASE}/login/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p })
+                });
+                const data = await res.json();
+                if (data.token) {
+                    authToken = data.token;
+                    document.getElementById('authForms').style.display = 'none';
+                    document.getElementById('userInfo').style.display = 'block';
+                    document.getElementById('currentUser').innerText = u;
+                }
+                result.innerText = JSON.stringify(data, null, 2);
+            } catch (e) { result.innerText = 'Error: ' + e; }
+        }
+
+        async function handleLogout() {
+             authToken = null;
+             document.getElementById('authForms').style.display = 'block';
+             document.getElementById('userInfo').style.display = 'none';
+             document.getElementById('authResult').innerText = 'Logged out';
+        }
+
+        async function addDoctor() {
+            const n = document.getElementById('docName').value;
+            const s = document.getElementById('docSpecialty').value;
+            const c = document.getElementById('docContact').value;
+            const result = document.getElementById('doctorResult');
+            try {
+                const res = await fetch(`${API_BASE}/doctors/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: n, specialty: s, contact_details: c })
+                });
+                const data = await res.json();
+                result.innerText = "Doctor Added:\n" + JSON.stringify(data, null, 2);
+            } catch (e) { result.innerText = 'Error: ' + e; }
+        }
+
+        async function listDoctors() {
+            const result = document.getElementById('doctorResult');
+            try {
+                const res = await fetch(`${API_BASE}/doctors/`);
+                const data = await res.json();
+                result.innerText = "List (Paginated):\n" + JSON.stringify(data, null, 2);
+            } catch (e) { result.innerText = 'Error: ' + e; }
+        }
+
+        async function fetchWeather() {
+            const city = document.getElementById('cityInput').value;
+            const result = document.getElementById('integrationResult');
+            try {
+                const res = await fetch(`${API_BASE}/weather/?city=${city}`);
+                const data = await res.json();
+                result.innerText = "Weather:\n" + JSON.stringify(data, null, 2);
+            } catch (e) { result.innerText = 'Error: ' + e; }
+        }
+
+        async function fetchGitHub() {
+            const user = document.getElementById('githubUser').value;
+            const result = document.getElementById('integrationResult');
+            try {
+                const res = await fetch(`${API_BASE}/github/repos/?username=${user}`);
+                const data = await res.json();
+                result.innerText = "GitHub Repos:\n" + JSON.stringify(data, null, 2);
+            } catch (e) { result.innerText = 'Error: ' + e; }
+        }
+
+        async function fetchCountry() {
+            const country = document.getElementById('countryInput').value;
+            const result = document.getElementById('integrationResult');
+            try {
+                const res = await fetch(`${API_BASE}/country/?country=${country}`);
+                const data = await res.json();
+                result.innerText = "Country Data:\n" + JSON.stringify(data, null, 2);
+            } catch (e) { result.innerText = 'Error: ' + e; }
+        }
+
+        async function sendOTP() {
+            const phone = document.getElementById('phoneInput').value;
+            const result = document.getElementById('notifPayResult');
+            try {
+                const res = await fetch(`${API_BASE}/otp/send/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: phone })
+                });
+                const data = await res.json();
+                result.innerText = JSON.stringify(data, null, 2);
+            } catch (e) { result.innerText = 'Error: ' + e; }
+        }
+
+        async function processPayment() {
+            const amount = document.getElementById('payAmount').value * 100;
+            const result = document.getElementById('notifPayResult');
+            try {
+                const res = await fetch(`${API_BASE}/payment/stripe/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: amount })
+                });
+                const data = await res.json();
+                result.innerText = "Stripe Response:\n" + JSON.stringify(data, null, 2);
+            } catch (e) { result.innerText = 'Error: ' + e; }
+        }
+
+        async function fetchGeocode() {
+            const addr = document.getElementById('addressInput').value;
+            const result = document.getElementById('mapResult');
+            try {
+                const res = await fetch(`${API_BASE}/geocode/?address=${addr}`);
+                const data = await res.json();
+                result.innerText = "Geocode Data:\n" + JSON.stringify(data, null, 2);
+                if (data.results && data.results[0]) {
+                    const loc = data.results[0].geometry.location;
+                    document.getElementById('map').innerText = `Lat: ${loc.lat}, Lng: ${loc.lng}`;
+                }
+            } catch (e) { result.innerText = 'Error: ' + e; }
+        }
+    </script>
+</body>
+</html>

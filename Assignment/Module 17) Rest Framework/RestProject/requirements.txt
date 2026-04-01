@@ -1,9 +1,11 @@
-django>=4.2,<5.0
+django
 djangorestframework
 requests
-django-cors-headers
 django-allauth
 twilio
-sendgrid
 stripe
 python-dotenv
+googlemaps
+tweepy
+django-cors-headers
+django-filter
