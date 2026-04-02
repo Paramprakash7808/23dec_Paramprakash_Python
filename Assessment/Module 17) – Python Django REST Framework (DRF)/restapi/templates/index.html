@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTracker Solutions - API Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg: #0F172A;
+            --surface: #1E293B;
+            --surface-hover: #334155;
+            --text: #F8FAFC;
+            --text-muted: #94A3B8;
+            --danger: #EF4444;
+            --danger-hover: #DC2626;
+            --success: #10B981;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            background: linear-gradient(to right, #818CF8, #4F46E5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger-hover);
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        tbody tr:hover {
+            background: var(--surface-hover);
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid var(--border);
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.2s;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text);
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 150px;
+            overflow-y: auto;
+            background: var(--bg);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-item input {
+            width: auto;
+        }
+
+        .badges {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(79, 70, 229, 0.2);
+            color: #818CF8;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>EduTracker Solutions Backend Admin</h1>
+        
+        <div class="grid">
+            <!-- Courses Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-book text-primary"></i> Courses</h2>
+                    <div style="display:flex; gap:0.5rem;">
+                        <button class="btn" style="background:var(--surface-hover);" onclick="fetchCourses()" title="Get All Courses">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <button class="btn" onclick="openModal('course')">
+                            <i class="fas fa-plus"></i> Add Course
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="coursesTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Courses will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Students Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-user-graduate text-primary"></i> Students</h2>
+                    <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; justify-content: flex-end;">
+                        <input type="text" id="studentSearch" placeholder="Search name/course..." oninput="filterStudents()" style="padding: 0.4rem; border-radius: 0.5rem; border: 1px solid var(--border); background: var(--bg); color: var(--text); width: 170px;">
+                        <div style="display:flex; gap:0.5rem;">
+                            <button class="btn" style="background:var(--surface-hover);" onclick="fetchStudents()" title="Get All Students">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                            <button class="btn" onclick="openModal('student')">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Enrolled Courses</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Students will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Modal -->
+    <div id="courseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="courseModalTitle">Add Course</h2>
+                <button class="close-btn" onclick="closeModal('course')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="courseForm" onsubmit="handleCourseSubmit(event)">
+                <input type="hidden" id="courseId">
+                <div class="form-group">
+                    <label>Course Name</label>
+                    <input type="text" id="courseName" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="courseDescription" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; justify-content: center;">Save Course</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Student Modal -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="studentModalTitle">Add Student</h2>
+                <button class="close-btn" onclick="closeModal('student')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="studentForm" onsubmit="handleStudentSubmit(event)">
+                <input type="hidden" id="studentId">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" id="studentFirstName" required>
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" id="studentLastName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="studentEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Link Courses (Ctrl+Click to select multiple)</label>
+                    <select id="studentCourses" multiple style="height: 100px;">
+                        <!-- Options loaded dynamically -->
+                    </select>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; justify-content: center;">Save Student</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Student Modal -->
+    <div id="viewStudentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Student Profile</h2>
+                <button class="close-btn" onclick="closeModal('viewStudent')"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="viewStudentContent" style="background: var(--bg); padding: 1.5rem; border-radius: 0.5rem; border: 1px solid var(--border);">
+                <!-- Details injected here -->
+            </div>
+            <button class="btn" style="width: 100%; justify-content: center; margin-top: 1rem;" onclick="closeModal('viewStudent')">Close View</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        let allStudents = []; // Cache for client-side searching
+
+        // Load Initial Data
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchCourses();
+            fetchStudents();
+        });
+
+        // --- COURSES API ---
+        async function fetchCourses() {
+            try {
+                const res = await fetch(`${API_URL}/courses/`);
+                const courses = await res.json();
+                renderCourses(courses);
+                updateCourseSelectOptions(courses);
+            } catch (error) {
+                console.error("Error fetching courses:", error);
+            }
+        }
+
+        async function saveCourse(courseData, id = null) {
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `${API_URL}/courses/${id}/` : `${API_URL}/courses/`;
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(courseData)
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    alert("Error saving course: " + JSON.stringify(err));
+                    return;
+                }
+                closeModal('course');
+                fetchCourses();
+                // If a course is updated, student display might change
+                fetchStudents(); 
+            } catch (error) {
+                console.error("Error saving course:", error);
+                alert("Network error while saving course");
+            }
+        }
+
+        async function deleteCourse(id) {
+            if(!confirm("Are you sure you want to delete this course?")) return;
+            try {
+                await fetch(`${API_URL}/courses/${id}/`, { method: 'DELETE' });
+                fetchCourses();
+                fetchStudents();
+            } catch (error) {
+                console.error("Error deleting course:", error);
+            }
+        }
+
+        // --- STUDENTS API ---
+        async function fetchStudents() {
+            try {
+                const res = await fetch(`${API_URL}/students/`);
+                const students = await res.json();
+                allStudents = students;
+                filterStudents(); // Applies current search or renders all
+            } catch (error) {
+                console.error("Error fetching students:", error);
+            }
+        }
+
+        async function saveStudent(studentData, id = null) {
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `${API_URL}/students/${id}/` : `${API_URL}/students/`;
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(studentData)
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    alert("Error saving student: " + JSON.stringify(err));
+                    return;
+                }
+                closeModal('student');
+                fetchStudents();
+            } catch (error) {
+                console.error("Error saving student:", error);
+                alert("Network error while saving student");
+            }
+        }
+
+        async function deleteStudent(id) {
+            if(!confirm("Are you sure you want to delete this student?")) return;
+            try {
+                await fetch(`${API_URL}/students/${id}/`, { method: 'DELETE' });
+                fetchStudents();
+            } catch (error) {
+                console.error("Error deleting student:", error);
+            }
+        }
+
+        async function viewStudent(id) {
+            try {
+                // GET Single Student Endpoint
+                const res = await fetch(`${API_URL}/students/${id}/`);
+                if (!res.ok) throw new Error("Failed to load student");
+                const student = await res.json();
+
+                let courseBadges = '';
+                if(student.courses_details && student.courses_details.length > 0) {
+                    courseBadges = `<div class="badges" style="margin-top: 0.5rem;">` + 
+                        student.courses_details.map(c => `<span class="badge">${c.name}</span>`).join('') + 
+                        `</div>`;
+                } else {
+                    courseBadges = `<p class="text-muted" style="margin-top: 0.5rem; font-size: 0.875rem;">No enrolled courses</p>`;
+                }
+
+                document.getElementById('viewStudentContent').innerHTML = `
+                    <div style="margin-bottom: 0.75rem;"><strong style="color:var(--text-muted)">ID:</strong> <span>${student.id}</span></div>
+                    <div style="margin-bottom: 0.75rem;"><strong style="color:var(--text-muted)">Full Name:</strong> <span>${student.first_name} ${student.last_name}</span></div>
+                    <div style="margin-bottom: 0.75rem;"><strong style="color:var(--text-muted)">Email Address:</strong> <span>${student.email}</span></div>
+                    <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+                        <strong style="color:var(--text-muted)">Enrolled Courses:</strong>
+                        ${courseBadges}
+                    </div>
+                `;
+                document.getElementById('viewStudentModal').classList.add('active');
+            } catch (error) {
+                console.error("Error fetching single student:", error);
+                alert("Failed to get single student details.");
+            }
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function renderCourses(courses) {
+            const tbody = document.querySelector('#coursesTable tbody');
+            tbody.innerHTML = '';
+            courses.forEach(course => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${course.id}</td>
+                    <td>${course.name}</td>
+                    <td>${course.description || '-'}</td>
+                    <td class="actions">
+                        <button class="btn btn-sm" onclick='editCourse(${JSON.stringify(course).replace(/'/g, "&apos;")})'>
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteCourse(${course.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderStudents(students) {
+            const tbody = document.querySelector('#studentsTable tbody');
+            tbody.innerHTML = '';
+            students.forEach(student => {
+                const tr = document.createElement('tr');
+                
+                let courseBadges = '';
+                if(student.courses_details && student.courses_details.length > 0) {
+                    courseBadges = `<div class="badges">` + 
+                        student.courses_details.map(c => `<span class="badge">${c.name}</span>`).join('') + 
+                        `</div>`;
+                } else {
+                    courseBadges = `<span class="text-muted" style="font-size:0.875rem;">No courses</span>`;
+                }
+
+                tr.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.first_name} ${student.last_name}</td>
+                    <td>${student.email}</td>
+                    <td>${courseBadges}</td>
+                    <td class="actions">
+                        <button class="btn btn-sm" style="background:#0ea5e9" onclick="viewStudent(${student.id})" title="Get Single Student">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm" onclick='editStudent(${JSON.stringify(student).replace(/'/g, "&apos;")})' title="Update Student">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteStudent(${student.id})" title="Delete Student">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateCourseSelectOptions(courses) {
+            const select = document.getElementById('studentCourses');
+            select.innerHTML = '';
+            if (courses.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = "";
+                opt.textContent = "No courses available (Create one first)";
+                opt.disabled = true;
+                select.appendChild(opt);
+                return;
+            }
+            courses.forEach(course => {
+                const opt = document.createElement('option');
+                opt.value = course.id;
+                opt.textContent = course.name;
+                select.appendChild(opt);
+            });
+        }
+
+        function filterStudents() {
+            const query = document.getElementById('studentSearch').value.toLowerCase();
+            const filtered = allStudents.filter(student => {
+                const fullName = `${student.first_name} ${student.last_name}`.toLowerCase();
+                const courseNames = student.courses_details ? student.courses_details.map(c => c.name.toLowerCase()).join(' ') : '';
+                return fullName.includes(query) || courseNames.includes(query);
+            });
+            renderStudents(filtered);
+        }
+
+        // --- HANDLERS ---
+        function handleCourseSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('courseId').value;
+            const content = {
+                name: document.getElementById('courseName').value,
+                description: document.getElementById('courseDescription').value
+            };
+            saveCourse(content, id);
+        }
+
+        function handleStudentSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('studentId').value;
+            
+            // Get selected courses
+            const courseSelect = document.getElementById('studentCourses');
+            const selectedCourses = Array.from(courseSelect.selectedOptions).map(opt => parseInt(opt.value));
+            
+            const content = {
+                first_name: document.getElementById('studentFirstName').value,
+                last_name: document.getElementById('studentLastName').value,
+                email: document.getElementById('studentEmail').value,
+                courses: selectedCourses
+            };
+            saveStudent(content, id);
+        }
+
+        // --- UI UTILS ---
+        function openModal(type) {
+            document.getElementById(type + 'Modal').classList.add('active');
+            if(type === 'course') {
+                document.getElementById('courseModalTitle').innerText = 'Add Course';
+                document.getElementById('courseForm').reset();
+                document.getElementById('courseId').value = '';
+            } else if (type === 'student') {
+                document.getElementById('studentModalTitle').innerText = 'Add Student';
+                document.getElementById('studentForm').reset();
+                document.getElementById('studentId').value = '';
+            }
+        }
+
+        function closeModal(type) {
+            document.getElementById(type + 'Modal').classList.remove('active');
+        }
+
+        function editCourse(course) {
+            document.getElementById('courseModalTitle').innerText = 'Edit Course';
+            document.getElementById('courseId').value = course.id;
+            document.getElementById('courseName').value = course.name;
+            document.getElementById('courseDescription').value = course.description || '';
+            document.getElementById('courseModal').classList.add('active');
+        }
+
+        function editStudent(student) {
+            document.getElementById('studentModalTitle').innerText = 'Edit Student';
+            document.getElementById('studentId').value = student.id;
+            document.getElementById('studentFirstName').value = student.first_name;
+            document.getElementById('studentLastName').value = student.last_name;
+            document.getElementById('studentEmail').value = student.email;
+            
+            const select = document.getElementById('studentCourses');
+            const courseIds = student.courses_details ? student.courses_details.map(c => c.id) : [];
+            Array.from(select.options).forEach(opt => {
+                opt.selected = courseIds.includes(parseInt(opt.value));
+            });
+            
+            document.getElementById('studentModal').classList.add('active');
+        }
+        
+        // Close modal when clicking outside content
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
