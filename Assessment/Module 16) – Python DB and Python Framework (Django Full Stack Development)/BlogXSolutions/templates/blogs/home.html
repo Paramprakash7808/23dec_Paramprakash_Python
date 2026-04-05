@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <!-- Filters Sidebar -->
+    <div class="col-md-3 mb-4">
+        <div class="card card-modern p-3">
+            <h5 class="mb-3">Filters</h5>
+            <form method="GET">
+                <div class="mb-3">
+                    <label class="form-label" for="q">Search</label>
+                    <input type="text" name="q" id="q" class="form-control" value="{{ request.GET.q }}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="category">Category</label>
+                    <select name="category" id="category" class="form-control">
+                        <option value="">All Categories</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.slug }}" {% if request.GET.category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="author">Author</label>
+                    <input type="text" name="author" id="author" class="form-control" value="{{ request.GET.author }}">
+                </div>
+                <button type="submit" class="btn btn-gradient w-100">Apply Filters</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Blog Posts List -->
+    <div class="col-md-9">
+        {% if posts %}
+            <div class="row">
+                {% for post in posts %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card card-modern h-100">
+                            {% if post.cover_image %}
+                                <img src="{{ post.cover_image.url }}" class="card-img-top" alt="{{ post.title }}" style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
+                            <div class="card-body d-flex flex-column">
+                                <div class="mb-2">
+                                    {% if post.category %}
+                                        <span class="badge bg-primary text-white">{{ post.category.name }}</span>
+                                    {% endif %}
+                                </div>
+                                <h4 class="card-title"><a href="{{ post.get_absolute_url }}" class="text-decoration-none text-dark">{{ post.title }}</a></h4>
+                                <p class="text-muted small mb-3">
+                                    By <a href="?author={{ post.author.username }}">{{ post.author.username }}</a> on {{ post.created_at|date:"M d, Y" }}
+                                </p>
+                                <div class="mt-auto">
+                                    <a href="{{ post.get_absolute_url }}" class="btn btn-outline-primary btn-sm">Read More</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.author %}&author={{ request.GET.author }}{% endif %}">Previous</a></li>
+                        {% endif %}
+                        
+                        <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+                        
+                        {% if page_obj.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.author %}&author={{ request.GET.author }}{% endif %}">Next</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+
+        {% else %}
+            <div class="alert alert-info text-center py-5">
+                <h4>No posts found</h4>
+                <p>Try adjusting your search or filters.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

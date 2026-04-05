@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Logged Out - WriteSphere{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card card-modern p-5 mt-5 text-center">
+            <div class="mb-4 text-primary">
+                <i class="fas fa-check-circle fa-4x"></i>
+            </div>
+            <h2 class="mb-2">You've been logged out</h2>
+            <p class="text-muted mb-4">Thank you for using WriteSphere. See you next time!</p>
+            <div class="d-flex gap-3 justify-content-center">
+                <a href="{% url 'login' %}" class="btn btn-gradient px-4">Log Back In</a>
+                <a href="{% url 'post_list' %}" class="btn btn-outline-secondary px-4">Browse Posts</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

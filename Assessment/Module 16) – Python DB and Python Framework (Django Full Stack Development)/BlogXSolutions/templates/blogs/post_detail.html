@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}{{ object.title }} - WriteSphere{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card card-modern p-4 p-md-5 mb-5 shadow-sm">
+            {% if object.cover_image %}
+                <img src="{{ object.cover_image.url }}" class="img-fluid rounded-3 mb-4 w-100" style="max-height: 400px; object-fit: cover;" alt="{{ object.title }}">
+            {% endif %}
+            
+            <div class="mb-3">
+                {% if object.category %}
+                    <a href="{% url 'post_list' %}?category={{ object.category.slug }}" class="badge bg-primary text-white text-decoration-none">{{ object.category.name }}</a>
+                {% endif %}
+            </div>
+            
+            <h1 class="mb-3" style="font-weight: 800; font-size: 2.5rem;">{{ object.title }}</h1>
+            
+            <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-4">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <h6 class="mb-0">
+                            By <a href="{% url 'post_list' %}?author={{ object.author.username }}" class="text-decoration-none text-dark">{{ object.author.username }}</a>
+                        </h6>
+                        <small class="text-muted">{{ object.created_at|date:"F d, Y" }} &middot; {{ object.comments.count }} Comments</small>
+                    </div>
+                </div>
+                {% if user == object.author %}
+                <div>
+                    <a href="{% url 'post_update' object.slug %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a href="{% url 'post_delete' object.slug %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="post-content fs-5" style="line-height: 1.8;">
+                {{ object.content|safe }}
+            </div>
+
+            <div class="mt-5 pt-4 border-top">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        {% if user.is_authenticated %}
+                            <form action="{% url 'like_post' object.slug %}" method="POST" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-lg {% if is_liked %}btn-danger{% else %}btn-outline-danger{% endif %} rounded-pill px-4">
+                                    <i class="{% if is_liked %}fas{% else %}far{% endif %} fa-heart me-2"></i>
+                                    {{ object.likes.count }} Likes
+                                </button>
+                            </form>
+                        {% else %}
+                            <div class="text-muted">
+                                <i class="far fa-heart"></i> {{ object.likes.count }} Likes. <a href="{% url 'login' %}">Log in</a> to like.
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if object.tags.all %}
+                            <div class="text-muted">
+                                <i class="fas fa-tags me-1"></i>
+                                {% for tag in object.tags.all %}
+                                    <span class="badge bg-light text-dark border">{{ tag.name }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="card card-modern p-4 p-md-5 mb-5 shadow-sm">
+            <h3 class="mb-4">Comments ({{ comments.count }})</h3>
+            
+            {% if user.is_authenticated %}
+                <form action="{% url 'add_comment' object.slug %}" method="POST" class="mb-5">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <textarea name="content" class="form-control" rows="3" placeholder="Leave a comment..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary px-4">Post Comment</button>
+                </form>
+            {% else %}
+                <div class="alert alert-light border mb-5">
+                    Please <a href="{% url 'login' %}">log in</a> to leave a comment.
+                </div>
+            {% endif %}
+
+            <div class="comments-list">
+                {% for comment in comments %}
+                    <div class="d-flex mb-4 p-3 bg-light rounded">
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0 fw-bold">{{ comment.user.username }}</h6>
+                                <small class="text-muted">{{ comment.created_at|timesince }} ago</small>
+                            </div>
+
+                            <!-- Static comment text -->
+                            <p class="mb-1 comment-text-{{ comment.id }}">{{ comment.content }}</p>
+
+                            <!-- Inline Edit Form (hidden by default) -->
+                            {% if user == comment.user %}
+                            <form action="{% url 'edit_comment' comment.id %}" method="POST" id="edit-form-{{ comment.id }}" class="d-none mt-2">
+                                {% csrf_token %}
+                                <textarea name="content" class="form-control mb-2" rows="2">{{ comment.content }}</textarea>
+                                <button type="submit" class="btn btn-sm btn-primary me-2">Save</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleEdit({{ comment.id }})">Cancel</button>
+                            </form>
+                            {% endif %}
+
+                            <!-- Action buttons -->
+                            <div class="mt-2">
+                                {% if user == comment.user %}
+                                    <button class="btn btn-sm btn-link text-primary p-0 me-2" onclick="toggleEdit({{ comment.id }})">Edit</button>
+                                {% endif %}
+                                {% if user == comment.user or user == object.author %}
+                                    <form action="{% url 'delete_comment' comment.id %}" method="POST" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-link text-danger p-0" onclick="return confirm('Delete this comment?');">Delete</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No comments yet. Be the first to comment!</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleEdit(commentId) {
+    const textEl = document.querySelector('.comment-text-' + commentId);
+    const formEl = document.getElementById('edit-form-' + commentId);
+    if (textEl) textEl.classList.toggle('d-none');
+    if (formEl) formEl.classList.toggle('d-none');
+}
+</script>
+{% endblock %}

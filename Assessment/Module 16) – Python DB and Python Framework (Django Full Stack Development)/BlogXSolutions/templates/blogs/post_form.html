@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if object %}Update Post{% else %}New Post{% endif %} - WriteSphere
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .django-ckeditor-widget {
+        width: 100% !important;
+    }
+</style>
+{{ form.media }}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card card-modern p-4 p-md-5 mt-4">
+            <h2 class="mb-4">
+                {% if object %}Update Post{% else %}Create a New Post{% endif %}
+            </h2>
+            
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+                
+                <div class="mt-4 pt-3 border-top d-flex justify-content-between">
+                    <a href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'post_list' %}{% endif %}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-gradient px-4">
+                        {% if object %}Update{% else %}Publish{% endif %} Post
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

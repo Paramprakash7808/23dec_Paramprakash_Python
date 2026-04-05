@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Log In - WriteSphere{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card card-modern p-4 mt-5">
+            <h2 class="text-center mb-4">Welcome Back</h2>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="d-grid gap-2 mt-4">
+                    <button class="btn btn-gradient btn-lg" type="submit">Log In</button>
+                </div>
+            </form>
+            <div class="border-top pt-3 mt-4 text-center">
+                <small class="text-muted">
+                    Need an account? <a href="{% url 'register' %}" class="ml-2">Sign Up Now</a>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

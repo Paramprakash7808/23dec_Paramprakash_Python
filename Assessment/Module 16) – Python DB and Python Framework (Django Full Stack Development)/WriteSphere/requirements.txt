@@ -5,4 +5,4 @@ python-dotenv==1.0.0
 django-ckeditor==6.7.0
 django-taggit==5.0.1
 whitenoise==6.6.0
-django-allauth<65
+django-allauth==0.54.0

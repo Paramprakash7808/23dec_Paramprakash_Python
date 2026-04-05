@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Post - WriteSphere{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card card-modern p-4 mt-5 border-danger">
+            <div class="text-center mb-4 text-danger">
+                <i class="fas fa-exclamation-triangle fa-3x"></i>
+            </div>
+            <h2 class="text-center mb-3">Delete Post</h2>
+            <p class="text-center fs-5">Are you sure you want to delete the post: <br><strong>"{{ object.title }}"</strong>?</p>
+            <p class="text-center text-muted small">This action cannot be undone.</p>
+            
+            <form method="POST" class="mt-4">
+                {% csrf_token %}
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'post_detail' object.slug %}" class="btn btn-outline-secondary px-4">Cancel</a>
+                    <button type="submit" class="btn btn-danger px-4">Yes, Delete Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
