@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}User Management - WriteSphere Admin{% endblock %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col">
+        <h2 class="mb-0">User Management</h2>
+        <p class="text-muted">Monitor and manage platform access for all users.</p>
+    </div>
+    <div class="col-auto">
+        <div class="card bg-white border-0 shadow-sm p-3 rounded-4 d-flex flex-row align-items-center gap-4">
+            <div class="text-center px-2">
+                <h4 class="mb-0 fw-bold">{{ total_users }}</h4>
+                <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Total</small>
+            </div>
+            <div class="vr"></div>
+            <div class="text-center px-2 text-success">
+                <h4 class="mb-0 fw-bold">{{ active_users }}</h4>
+                <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Active</small>
+            </div>
+            <div class="vr"></div>
+            <div class="text-center px-2 text-danger">
+                <h4 class="mb-0 fw-bold">{{ blocked_users }}</h4>
+                <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Blocked</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card card-modern border-0 mb-5">
+    <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+        <form method="GET" class="row g-2">
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
+                    <input type="text" name="q" class="form-control border-start-0" placeholder="Search by username or email..." value="{{ search_query }}">
+                </div>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary px-4">Search</button>
+            </div>
+            {% if search_query %}
+            <div class="col-auto">
+                <a href="{% url 'user_management' %}" class="btn btn-link text-decoration-none">Clear Results</a>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+    
+    <div class="card-body p-0 mt-3">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="px-4 py-3 border-0">User</th>
+                        <th class="py-3 border-0">Email</th>
+                        <th class="py-3 border-0">Joined</th>
+                        <th class="py-3 border-0">Role</th>
+                        <th class="py-3 border-0">Status</th>
+                        <th class="px-4 py-3 border-0 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users_list %}
+                    <tr>
+                        <td class="px-4">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ u.profile.profile_picture.url }}" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;" alt="{{ u.username }}">
+                                <div>
+                                    <h6 class="mb-0 fw-bold">{{ u.username }}</h6>
+                                    {% if u.is_superuser %}
+                                        <span class="badge bg-dark-subtle text-dark border-0" style="font-size: 0.65rem;">SUPERUSER</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ u.email }}</td>
+                        <td class="text-muted small">{{ u.date_joined|date:"M d, Y" }}</td>
+                        <td>
+                            {% if u.is_superuser %}
+                                <span class="badge bg-danger">Admin</span>
+                            {% elif u.is_staff %}
+                                <span class="badge bg-primary">Staff</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Author</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if u.is_active %}
+                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3">Active</span>
+                            {% else %}
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3">Blocked</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 text-end">
+                            {% if u != user and not u.is_superuser %}
+                                <form action="{% url 'toggle_user_status' u.id %}" method="POST" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm {% if u.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %} rounded-pill px-3" onclick="return confirm('Are you sure you want to {% if u.is_active %}BLOCK{% else %}UNBLOCK{% endif %} user {{ u.username }}?')">
+                                        {% if u.is_active %}
+                                            <i class="fas fa-user-slash me-1"></i> Block
+                                        {% else %}
+                                            <i class="fas fa-user-check me-1"></i> Unblock
+                                        {% endif %}
+                                    </button>
+                                </form>
+                            {% else %}
+                                <span class="text-muted small italic">System Protected</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="fas fa-users fa-3x mb-3 opacity-25"></i>
+                            <p class="mb-0">No users found matching your search.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

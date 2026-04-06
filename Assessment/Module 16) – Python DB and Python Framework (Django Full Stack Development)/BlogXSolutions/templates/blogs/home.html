@@ -37,9 +37,12 @@
                     <div class="col-md-6 mb-4">
                         <div class="card card-modern h-100">
                             {% if post.cover_image %}
-                                <img src="{{ post.cover_image.url }}" class="card-img-top" alt="{{ post.title }}" style="height: 200px; object-fit: cover;">
+                                <div style="height: 220px; background: #f1f5f9; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                    <img src="{{ post.cover_image.url }}" alt="{{ post.title }}"
+                                         style="max-width: 100%; max-height: 220px; width: auto; height: auto; object-fit: contain; display: block;">
+                                </div>
                             {% else %}
-                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 220px;">
                                     <i class="fas fa-image fa-3x text-muted"></i>
                                 </div>
                             {% endif %}

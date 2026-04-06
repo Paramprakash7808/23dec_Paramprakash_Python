@@ -149,6 +149,11 @@
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
+                            <a class="nav-link" href="{% url 'category_manage' %}">
+                                <i class="fas fa-tags me-1"></i>Categories
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'post_create' %}">New Post</a>
                         </li>
                         <li class="nav-item dropdown">
@@ -157,6 +162,9 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="{% url 'profile' user.username %}">My Profile</a></li>
+                                {% if user.is_superuser %}
+                                    <li><a class="dropdown-item text-primary" href="{% url 'user_management' %}"><i class="fas fa-users-cog me-2"></i>Manage Users</a></li>
+                                {% endif %}
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form action="{% url 'logout' %}" method="post">

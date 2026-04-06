@@ -3,6 +3,7 @@ from django.contrib import messages
 from .forms import UserRegisterForm
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from .models import Profile, Follow
 
 
@@ -44,4 +45,50 @@ def toggle_follow(request, username):
         follow_obj, created = Follow.objects.get_or_create(follower=request.user, followed=user_to_follow)
         if not created:
             follow_obj.delete()
+    
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        return redirect(referer)
     return redirect('profile', username=username)
+
+# ── Admin User Management ───────────────────────────────────────────────────
+
+@login_required
+def user_management(request):
+    if not request.user.is_superuser:
+        messages.error(request, 'Access denied. Administrator privileges required.')
+        return redirect('post_list')
+    
+    query = request.GET.get('q', '')
+    users = User.objects.all().order_by('-date_joined')
+    
+    if query:
+        users = users.filter(
+            Q(username__icontains=query) | Q(email__icontains=query)
+        )
+        
+    context = {
+        'users_list': users,
+        'total_users': User.objects.count(),
+        'active_users': User.objects.filter(is_active=True).count(),
+        'blocked_users': User.objects.filter(is_active=False).count(),
+        'search_query': query
+    }
+    return render(request, 'users/user_management.html', context)
+
+@login_required
+def toggle_user_status(request, user_id):
+    if not request.user.is_superuser:
+        messages.error(request, 'Access denied.')
+        return redirect('post_list')
+        
+    user_to_toggle = get_object_or_404(User, id=user_id)
+    if user_to_toggle.is_superuser:
+        messages.error(request, 'Cannot block/unblock a superuser.')
+    else:
+        user_to_toggle.is_active = not user_to_toggle.is_active
+        user_to_toggle.save()
+        status = "unblocked" if user_to_toggle.is_active else "blocked"
+        messages.success(request, f'User {user_to_toggle.username} has been {status}.')
+        
+    return redirect('user_management')

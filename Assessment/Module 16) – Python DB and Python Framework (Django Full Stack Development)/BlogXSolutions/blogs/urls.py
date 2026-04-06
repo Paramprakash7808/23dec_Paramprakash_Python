@@ -11,4 +11,7 @@ urlpatterns = [
     path('post/<slug:slug>/comment/', views.add_comment, name='add_comment'),
     path('comment/<int:pk>/delete/', views.delete_comment, name='delete_comment'),
     path('comment/<int:pk>/edit/', views.edit_comment, name='edit_comment'),
+    # Category management
+    path('categories/', views.category_manage, name='category_manage'),
+    path('categories/<int:pk>/delete/', views.category_delete, name='category_delete'),
 ]

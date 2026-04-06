@@ -2,12 +2,128 @@
 
 {% block title %}{{ object.title }} - WriteSphere{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* ── Rich-text post content ───────────────────────────────────────────── */
+    .post-content {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        overflow: hidden;
+    }
+
+    /* All images inside a post — never overflow, always fully visible */
+    .post-content img {
+        max-width: 100% !important;
+        height: auto !important;
+        display: block;
+        margin: 1.5rem auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    }
+
+    /* Headings inside content */
+    .post-content h1, .post-content h2,
+    .post-content h3, .post-content h4 {
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+        font-weight: 700;
+        line-height: 1.3;
+    }
+
+    /* Paragraphs */
+    .post-content p {
+        margin-bottom: 1.25rem;
+    }
+
+    /* Blockquote */
+    .post-content blockquote {
+        border-left: 4px solid #6366f1;
+        background: #f8fafc;
+        margin: 1.5rem 0;
+        padding: 1rem 1.5rem;
+        border-radius: 0 8px 8px 0;
+        font-style: italic;
+        color: #475569;
+    }
+
+    /* Code */
+    .post-content pre,
+    .post-content code {
+        background: #1e293b;
+        color: #e2e8f0;
+        border-radius: 8px;
+        padding: 0.2em 0.5em;
+        font-size: 0.9em;
+    }
+    .post-content pre {
+        padding: 1.25rem;
+        overflow-x: auto;
+        margin-bottom: 1.25rem;
+    }
+    .post-content pre code {
+        background: transparent;
+        padding: 0;
+        border-radius: 0;
+    }
+
+    /* Tables — horizontally scrollable so nothing is hidden */
+    .post-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1.5rem;
+        display: block;
+        overflow-x: auto;
+    }
+    .post-content table th,
+    .post-content table td {
+        border: 1px solid #e2e8f0;
+        padding: 0.6rem 1rem;
+        text-align: left;
+    }
+    .post-content table th {
+        background: #f1f5f9;
+        font-weight: 700;
+    }
+
+    /* Lists */
+    .post-content ul, .post-content ol {
+        padding-left: 1.75rem;
+        margin-bottom: 1.25rem;
+    }
+    .post-content li {
+        margin-bottom: 0.4rem;
+    }
+
+    /* iframes/videos (embedded YouTube etc.) */
+    .post-content iframe {
+        max-width: 100%;
+        display: block;
+        margin: 1.5rem auto;
+        border-radius: 10px;
+    }
+
+    /* Links */
+    .post-content a {
+        color: #6366f1;
+        text-decoration: underline;
+    }
+    .post-content a:hover {
+        color: #4f46e5;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="card card-modern p-4 p-md-5 mb-5 shadow-sm">
             {% if object.cover_image %}
-                <img src="{{ object.cover_image.url }}" class="img-fluid rounded-3 mb-4 w-100" style="max-height: 400px; object-fit: cover;" alt="{{ object.title }}">
+                <div class="mb-4 rounded-3 overflow-hidden d-flex align-items-center justify-content-center"
+                     style="background: #f1f5f9; min-height: 200px; max-height: 480px;">
+                    <img src="{{ object.cover_image.url }}"
+                         alt="{{ object.title }}"
+                         style="max-width: 100%; max-height: 480px; width: auto; height: auto; object-fit: contain; display: block;">
+                </div>
             {% endif %}
             
             <div class="mb-3">
@@ -21,9 +137,23 @@
             <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-4">
                 <div class="d-flex align-items-center">
                     <div>
-                        <h6 class="mb-0">
-                            By <a href="{% url 'post_list' %}?author={{ object.author.username }}" class="text-decoration-none text-dark">{{ object.author.username }}</a>
-                        </h6>
+                        <div class="d-flex align-items-center mb-1">
+                            <h6 class="mb-0 me-3">
+                                By <a href="{% url 'post_list' %}?author={{ object.author.username }}" class="text-decoration-none text-dark fw-bold">{{ object.author.username }}</a>
+                            </h6>
+                            {% if user.is_authenticated and user != object.author %}
+                                <form action="{% url 'toggle_follow' object.author.username %}" method="POST" class="m-0 p-0">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm rounded-pill py-0 px-3 {% if is_following_author %}btn-outline-primary{% else %}btn-primary{% endif %}" style="font-size: 0.8rem; line-height: 1.8;">
+                                        {% if is_following_author %}
+                                            <i class="fas fa-user-minus me-1"></i> Unfollow
+                                        {% else %}
+                                            <i class="fas fa-user-plus me-1"></i> Follow
+                                        {% endif %}
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
                         <small class="text-muted">{{ object.created_at|date:"F d, Y" }} &middot; {{ object.comments.count }} Comments</small>
                     </div>
                 </div>
