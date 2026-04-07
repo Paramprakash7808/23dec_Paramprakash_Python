@@ -36,7 +36,7 @@ print(stdata)
 stdata['subject'] = 'Python'
 print(stdata)
 
-stdata['city'] = 'Tithava'
+stdata['city'] = 'Surat'
 print(stdata)
 
 stdata.pop('city')
