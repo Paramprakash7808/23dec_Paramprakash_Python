@@ -1,5 +1,4 @@
-# Practical Example 8: Write a Python program to check if a person is eligible to donate blood
-# using a nested if.
+# Practical Example 8: Write a Python program to check if a person is eligible to donate blood using a nested if.
 
 age = int(input("Enter Your Age: "))
 blood = input("Enter Your Blood Group: ")
