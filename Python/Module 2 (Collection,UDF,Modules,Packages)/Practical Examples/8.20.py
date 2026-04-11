@@ -1,6 +1,4 @@
-# 20) Write 
-# a Python program to create a parameterized function that takes two arguments and prints their 
-# sum.
+# 20) Write a Python program to create a parameterized function that takes two arguments and prints their sum.
 
 no1 = int(input("Enter 1st No: "))
 no2 = int(input("Enter 2nd No: "))

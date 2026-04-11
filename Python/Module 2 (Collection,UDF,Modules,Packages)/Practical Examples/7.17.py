@@ -1,5 +1,4 @@
-# 17) Write a Python program to convert two lists into one 
-# dictionary using a for loop.
+# 17) Write a Python program to convert two lists into one dictionary using a for loop.
 
 list1 = ['id', 'name', 'city']
 list2 = [1, 'Prakash', 'Rajkot']

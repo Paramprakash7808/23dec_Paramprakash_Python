@@ -1,5 +1,4 @@
-# 3) Write a Python program to update a list using insert() and 
-# append().
+# 3) Write a Python program to update a list using insert() and append().
 
 sub = ['c','c++','sql','python']
 

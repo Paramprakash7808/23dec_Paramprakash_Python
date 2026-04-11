@@ -1,5 +1,4 @@
-# 8) Write a 
-# Python program to create a tuple with multiple data types.
+# 8) Write a Python program to create a tuple with multiple data types.
 
 data = (1,1.1,'Prakash',78j,True,[1,2,3])
 print(data)
