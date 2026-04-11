@@ -1,6 +1,6 @@
 import random,datetime
 
-student = int(input("Enter number of Students:"))
+student = int(input("Enter Number of Students:"))
 
 s = []
 

@@ -1,6 +1,6 @@
 import instaloader
 
-instaid = 'bhimarmychief'
+insta_id = 'bhimarmychief'
 
 insta = instaloader.Instaloader()
-insta.download_profile(instaid)
+insta.download_profile(insta_id)
