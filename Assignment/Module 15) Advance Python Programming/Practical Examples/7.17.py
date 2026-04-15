@@ -1,10 +1,6 @@
-# 17) Write a Python 
-# program to show hybrid inheritance.
+# 17) Write a Python program to show hybrid inheritance.
 # hybrid inheritance is Inverse of Multilevel Inheritance.
 # Hybrid inheritance is a combination of two or more types of inheritance.
-
-# 14) Write a 
-# Python program to show multilevel inheritance.
 
 class Prakash:
     pid : int

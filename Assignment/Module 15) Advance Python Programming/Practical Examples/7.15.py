@@ -1,5 +1,4 @@
-# 15) Write a Python program to show multiple 
-# inheritance.
+# 15) Write a Python program to show multiple inheritance.
 
 class Prakash:
     pid : int

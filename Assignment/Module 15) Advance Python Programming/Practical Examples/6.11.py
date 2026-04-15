@@ -1,5 +1,4 @@
-# 11) Write a Python program to create a class and access the properties 
-# of the class using an object.
+# 11) Write a Python program to create a class and access the properties of the class using an object.
 
 class data:
     def getdata(self):

@@ -1,5 +1,4 @@
-# 6) Write a 
-# Python program to check the current position of the file cursor using tell().
+# 6) Write a Python program to check the current position of the file cursor using tell().
 
 fi = open('temp.txt','r')
 print("Initial Cursor Position:",fi.tell())

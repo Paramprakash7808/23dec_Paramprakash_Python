@@ -1,5 +1,4 @@
-# 12) Write a Python program to demonstrate the use of local and 
-# global variables in a class.
+# 12) Write a Python program to demonstrate the use of local and global variables in a class.
 
 id = 101 #Global Variable
 name = 'Prakash' #Global Variable

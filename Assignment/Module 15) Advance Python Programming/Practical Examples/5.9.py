@@ -1,5 +1,4 @@
-# 9) Write a Python program to handle file exceptions and use the finally block for closing 
-# the file.
+# 9) Write a Python program to handle file exceptions and use the finally block for closing the file.
 
 try:
     fi = open('data.txt','r')

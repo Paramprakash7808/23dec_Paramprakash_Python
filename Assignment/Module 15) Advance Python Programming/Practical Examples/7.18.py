@@ -1,5 +1,4 @@
-# 18) Write a Python program to demonstrate the use of 
-# super() in inheritance.
+# 18) Write a Python program to demonstrate the use of super() in inheritance.
 
 class master:
     def header(self):

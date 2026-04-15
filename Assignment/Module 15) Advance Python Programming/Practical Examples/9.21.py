@@ -1,5 +1,4 @@
-# 21) Write a Python program to create a database and a table using 
-# SQLite3.
+# 21) Write a Python program to create a database and a table using SQLite3.
 
 import sqlite3
 

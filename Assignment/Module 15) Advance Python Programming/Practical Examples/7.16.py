@@ -17,7 +17,6 @@ class Prakash(collage):
         print("Prakash's Id is:",self.pid)
         print("Prakash's Feild is:",self.pFeild)
 
-
 class Sahil(collage):
     sid : int
     sFeild : str

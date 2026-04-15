@@ -1,5 +1,4 @@
-# 14) Write a 
-# Python program to show multilevel inheritance.
+# 14) Write a Python program to show multilevel inheritance.
 
 class Prakash:
     pid : int

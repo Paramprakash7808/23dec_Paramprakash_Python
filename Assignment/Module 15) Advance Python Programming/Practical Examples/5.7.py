@@ -4,9 +4,9 @@ try:
     a = int(input("Enter Value Of A:"))
     b = int(input("Enter Value Of B:"))
 
-    print("Addition of A and B is:", a + b)
-    print("Subtraction of A and B is:", a - b)
-    print("Multiplication of A and B is:", a * b)
+    print("Addition of A and B is:",a+b)
+    print("Subtraction of A and B is:",a-b)
+    print("Multiplication of A and B is:",a*b)
     print("Division of A and B is:",a/b)
     
 except ZeroDivisionError:

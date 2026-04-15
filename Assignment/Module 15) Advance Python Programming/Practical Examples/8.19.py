@@ -1,7 +1,7 @@
 # 19) Write a Python program to show method overloading.
 
+# Method Overloading
 class data:
-    # Method Overloading
     def getdata(self,id):
         print("Your Id is:",id)
 

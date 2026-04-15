@@ -1,5 +1,4 @@
-# 20) Write a 
-# Python program to show method overriding.
+# 20) Write a Python program to show method overriding.
 
 class master:
     def header(self):
