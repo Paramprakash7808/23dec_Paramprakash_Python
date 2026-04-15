@@ -1,8 +1,8 @@
 # Write Python programs to demonstrate method overloading and method overriding.
 
+# Method Overloading
 print("Method Overloading")
 class data:
-    # Method Overloading
     def getdata(self,id):
         print("Your Id is:",id)
 
@@ -12,7 +12,7 @@ class data:
 dt = data()
 dt.getdata("Prakash")
 
-
+# Method Overriding
 print("\nMethod Overriding")
 class master:
     def header(self):

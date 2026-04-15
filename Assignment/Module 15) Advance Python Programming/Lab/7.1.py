@@ -1,7 +1,7 @@
-# Write Python programs to demonstrate different types of inheritance (single, multiple, 
-# multilevel, etc.).
+# Write Python programs to demonstrate different types of inheritance (single, multiple, multilevel, etc.).
 
-print("Single inheritance:")
+# Single Inheritance
+print("Single Inheritance:")
 class father:
     bal : int
     car : int
@@ -19,6 +19,7 @@ sn = son()
 sn.getdata()
 sn.printdata()
 
+# Multiple Inheritance
 print("Multiple Inheritance:")
 class Prakash:
     pid : int
@@ -59,6 +60,7 @@ clg.s_getdata()
 clg.a_getdata()
 clg.printdata()
 
+# Multilevel Inheritance
 print("Multilevel Inheritance:")
 class Prakash:
     pid : int
