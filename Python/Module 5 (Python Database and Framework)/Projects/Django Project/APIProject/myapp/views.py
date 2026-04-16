@@ -61,11 +61,3 @@ def update_student_id(request,id):
             return Response(status=status.HTTP_202_ACCEPTED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
-
-
-        
-
-
-
-
