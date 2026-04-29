@@ -1,5 +1,4 @@
-#  15) Write a Python program to update a value at a particular key in a 
-# dictionary.
+#  15) Write a Python program to update a value at a particular key in a dictionary.
 
 data = {
     'id' : 1,

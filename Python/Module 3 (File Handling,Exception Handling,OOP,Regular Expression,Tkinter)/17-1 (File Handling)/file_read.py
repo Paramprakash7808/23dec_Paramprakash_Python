@@ -1,4 +1,4 @@
-fi = open('test.txt','r')
+fi = open('hello.txt','r')
 # print(fi.read())
 # print(fi.readline())
 # print(fi.readlines())
