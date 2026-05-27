@@ -1,6 +1,6 @@
 # Practical Example 7: Write a Python program to calculate grades based on percentage using if-else ladder.
 
-marks = float(input("Enter Your Marks: "))
+marks = float(input("Enter Your Marks:"))
 
 if marks >= 90:
     print("A Grade")
