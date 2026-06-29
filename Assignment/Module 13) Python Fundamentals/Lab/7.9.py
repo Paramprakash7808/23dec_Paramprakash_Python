@@ -4,3 +4,6 @@ mystr = "This is Python!"
 
 for i in range(1, len(mystr), 2):
     print(mystr[i], end="")
+
+# mystr = "This is Python!"
+# print(mystr[1::2])

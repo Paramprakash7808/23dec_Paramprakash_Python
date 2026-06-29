@@ -16,7 +16,7 @@ ex:capsule
 and behaviour of parent class
 ex:father-son
 
-6.polymorphism -> Many ways to perform anything or same method name and different behaviour.
+6.polymorphism -> Many ways to perform anything or same method name and different behaviour or one name and many forms.
 ex:
 1)overloading
 2)overriding
