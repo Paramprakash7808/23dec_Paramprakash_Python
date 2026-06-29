@@ -3,5 +3,6 @@
 try:
     fi = open('data.txt','r')
     print(fi.read())
+    fi.close()
 except:
     print("File Not Found")

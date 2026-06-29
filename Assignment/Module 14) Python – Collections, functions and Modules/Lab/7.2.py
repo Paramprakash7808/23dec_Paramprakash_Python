@@ -1,4 +1,4 @@
-# Write a Python program to merge two lists into one dictionary using a loop. 
+# Write a Python program to merge two lists into one dictionary using a loop.
 
 list1 = ['id', 'name', 'city']
 list2 = [1, 'Prakash', 'Rajkot']

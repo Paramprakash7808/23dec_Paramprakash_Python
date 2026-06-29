@@ -3,6 +3,7 @@
 try:
     fi = open('data.txt','r')
     print(fi.read())
+    fi.close()
     a = int(input("Enter Value Of A:"))
     b = int(input("Enter Value Of B:"))
 

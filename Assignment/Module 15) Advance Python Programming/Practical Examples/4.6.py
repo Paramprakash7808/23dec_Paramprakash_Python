@@ -5,3 +5,4 @@ print("Initial Cursor Position:",fi.tell())
 
 fi.read(5)
 print("Cursor Position After Reading 5 Characters:",fi.tell())
+fi.close()

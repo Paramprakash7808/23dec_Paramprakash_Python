@@ -2,3 +2,4 @@
 
 fi = open('data.txt','w')
 fi.write('Hello')
+fi.close()

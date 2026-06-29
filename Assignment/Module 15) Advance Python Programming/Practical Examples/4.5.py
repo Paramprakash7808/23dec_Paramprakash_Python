@@ -2,3 +2,4 @@
 
 fi = open('temp.txt','r')
 print(fi.read())
+fi.close()

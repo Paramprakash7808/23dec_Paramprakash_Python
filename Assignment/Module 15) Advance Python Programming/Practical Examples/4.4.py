@@ -2,3 +2,4 @@
 
 fi = open('temp.txt','w')
 fi.write('This is Python')
+fi.close()
